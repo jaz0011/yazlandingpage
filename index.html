@@ -1,0 +1,1521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wellness by Yaz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Public+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --terracota: #B85C45;
+    --salvia: #628474;
+    --menta: #CCD8C7;
+    --brisa: #C1DBDA;
+    --dorado: #E8C99A;
+    --petalo: #FAB6AB;
+    --rosa-seca: #8B3A3A;
+    --noche: #000000;
+    --crema: #F4EEEC;
+    --off-white: #FAF8F5;
+    --dark: #1A1208;
+    --mid: #5C4A3A;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Public Sans', sans-serif;
+    background: var(--off-white);
+    color: var(--dark);
+    overflow-x: hidden;
+  }
+
+  /* ── CUSTOM CURSOR ── */
+  * { cursor: none !important; }
+  .cursor {
+    width: 10px; height: 10px;
+    background: var(--terracota);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9999;
+    transition: transform 0.15s ease, width 0.2s, height 0.2s, background 0.2s;
+    transform: translate(-50%, -50%);
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1px solid var(--terracota);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.4s cubic-bezier(.23,1,.32,1), opacity 0.3s;
+    opacity: 0.5;
+  }
+
+  /* ── NAV ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 1.25rem 3rem;
+    display: flex; align-items: center; justify-content: space-between;
+    transition: background 0.4s, padding 0.4s;
+  }
+  nav.scrolled {
+    background: rgba(250,248,245,0.92);
+    backdrop-filter: blur(12px);
+    padding: 0.9rem 3rem;
+    border-bottom: 0.5px solid rgba(0,0,0,0.08);
+  }
+  .nav-logo {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: 1.2rem;
+    color: var(--dark);
+    text-decoration: none;
+    letter-spacing: -0.01em;
+  }
+  .nav-logo span {
+    color: var(--terracota);
+  }
+  .nav-links {
+    display: flex; gap: 2.5rem; list-style: none; align-items: center;
+  }
+  .nav-links a {
+    font-size: 0.8rem; font-weight: 500;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--mid); text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--terracota); }
+  .nav-cta {
+    background: var(--terracota) !important;
+    color: white !important;
+    padding: 0.55rem 1.4rem !important;
+    border-radius: 100px !important;
+    letter-spacing: 0.06em !important;
+    transition: background 0.2s, transform 0.2s !important;
+  }
+  .nav-cta:hover { background: var(--rosa-seca) !important; transform: translateY(-1px) !important; }
+
+  /* ── HERO ── */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-left {
+    background: var(--dark);
+    padding: 8rem 4rem 4rem 3rem;
+    display: flex; flex-direction: column; justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-left::before {
+    content: '';
+    position: absolute; bottom: -100px; left: -100px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(184,92,69,0.25) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-eyebrow {
+    font-size: 0.7rem; font-weight: 600;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--salvia);
+    margin-bottom: 1.5rem;
+    display: flex; align-items: center; gap: 0.75rem;
+    animation: fadeUp 0.8s 0.2s both;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    display: block; width: 24px; height: 1px;
+    background: var(--salvia);
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: clamp(3rem, 5vw, 4.5rem);
+    line-height: 1.05;
+    color: var(--crema);
+    margin-bottom: 0.5rem;
+    animation: fadeUp 0.8s 0.35s both;
+  }
+  .hero-title em {
+    font-style: italic;
+    color: var(--petalo);
+    display: block;
+  }
+
+  .hero-sub {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1.1rem;
+    color: var(--dorado);
+    margin-bottom: 2rem;
+    animation: fadeUp 0.8s 0.5s both;
+  }
+
+  .hero-desc {
+    font-size: 0.95rem; line-height: 1.75;
+    color: rgba(250,248,245,0.65);
+    max-width: 400px;
+    margin-bottom: 2.5rem;
+    animation: fadeUp 0.8s 0.65s both;
+  }
+
+  .hero-actions {
+    display: flex; gap: 1rem; flex-wrap: wrap;
+    animation: fadeUp 0.8s 0.8s both;
+  }
+  .btn-primary {
+    background: var(--terracota);
+    color: white;
+    padding: 0.85rem 2rem;
+    border-radius: 100px;
+    font-size: 0.85rem; font-weight: 600;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    border: none;
+    transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+  }
+  .btn-primary:hover {
+    background: var(--rosa-seca);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(184,92,69,0.3);
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--crema);
+    padding: 0.85rem 2rem;
+    border-radius: 100px;
+    font-size: 0.85rem; font-weight: 500;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    border: 1px solid rgba(250,248,245,0.25);
+    transition: border-color 0.2s, color 0.2s, transform 0.2s;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+  }
+  .btn-ghost:hover {
+    border-color: var(--petalo);
+    color: var(--petalo);
+    transform: translateY(-2px);
+  }
+
+  .hero-stat-row {
+    display: flex; gap: 2rem; margin-top: 3rem;
+    padding-top: 2rem; border-top: 0.5px solid rgba(255,255,255,0.1);
+    animation: fadeUp 0.8s 1s both;
+  }
+  .hero-stat span {
+    display: block;
+    font-family: 'Playfair Display', serif;
+    font-weight: 900; font-size: 1.8rem;
+    color: var(--dorado);
+  }
+  .hero-stat p {
+    font-size: 0.72rem; color: rgba(250,248,245,0.5);
+    letter-spacing: 0.05em; text-transform: uppercase;
+    margin-top: 0.2rem;
+  }
+
+  .hero-right {
+    background: var(--crema);
+    position: relative;
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* SVG botanical illustration as hero visual */
+  .hero-botanical {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .hero-right-content {
+    position: relative; z-index: 2;
+    padding: 6rem 3rem 3rem;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    height: 100%;
+  }
+
+  .pillar-preview {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 1rem; width: 100%; max-width: 360px;
+    animation: fadeUp 0.9s 0.6s both;
+  }
+  .pillar-card-mini {
+    background: white;
+    border-radius: 16px;
+    padding: 1.25rem;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+  .pillar-card-mini:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.1);
+  }
+  .pillar-card-mini::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+  .pillar-card-mini.mind::before { background: #1D9E75; }
+  .pillar-card-mini.body::before { background: var(--terracota); }
+  .pillar-card-mini.spirit::before { background: #7F77DD; }
+  .pillar-card-mini.community::before { background: var(--dorado); }
+
+  .pillar-icon-wrap {
+    width: 36px; height: 36px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 0.75rem;
+  }
+  .mind .pillar-icon-wrap { background: #E1F5EE; }
+  .body .pillar-icon-wrap { background: #FAECE7; }
+  .spirit .pillar-icon-wrap { background: #EEEDFE; }
+  .community .pillar-icon-wrap { background: #FAEEDA; }
+
+  .pillar-card-mini h4 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700; font-size: 1rem;
+    color: var(--dark);
+    margin-bottom: 0.2rem;
+  }
+  .pillar-card-mini p {
+    font-size: 0.72rem; color: var(--mid); line-height: 1.5;
+  }
+
+  .hero-mission {
+    margin-top: 2rem;
+    text-align: center;
+    animation: fadeUp 0.9s 0.9s both;
+  }
+  .hero-mission-text {
+    font-family: 'Playfair Display', serif;
+    font-style: italic; font-size: 1.05rem;
+    color: var(--terracota);
+  }
+
+  /* ── MARQUEE ── */
+  .marquee-strip {
+    background: var(--terracota);
+    padding: 0.9rem 0;
+    overflow: hidden; white-space: nowrap;
+    position: relative;
+  }
+  .marquee-inner {
+    display: inline-flex; gap: 0;
+    animation: marquee 30s linear infinite;
+  }
+  .marquee-item {
+    font-size: 0.72rem; font-weight: 600;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    color: white;
+    padding: 0 2.5rem;
+    display: inline-flex; align-items: center; gap: 1.5rem;
+  }
+  .marquee-dot {
+    width: 4px; height: 4px;
+    background: var(--petalo);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* ── ABOUT ── */
+  .about {
+    padding: 6rem 3rem;
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 5rem; align-items: center;
+    max-width: 1200px; margin: 0 auto;
+  }
+  .about-visual {
+    position: relative;
+  }
+  .about-img-frame {
+    width: 100%;
+    aspect-ratio: 4/5;
+    background: var(--menta);
+    border-radius: 24px;
+    position: relative;
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .about-badge {
+    position: absolute; bottom: -1.5rem; right: -1.5rem;
+    width: 120px; height: 120px;
+    background: var(--terracota);
+    border-radius: 50%;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    color: white; text-align: center;
+    box-shadow: 0 8px 24px rgba(184,92,69,0.35);
+    z-index: 2;
+  }
+  .about-badge span {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900; font-size: 1.6rem;
+    line-height: 1;
+  }
+  .about-badge p { font-size: 0.62rem; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.85; margin-top: 2px; }
+
+  .about-content {}
+  .section-eyebrow {
+    font-size: 0.7rem; font-weight: 600;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--salvia); margin-bottom: 1rem;
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .section-eyebrow::before {
+    content: ''; display: block;
+    width: 20px; height: 1px; background: var(--salvia);
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900; font-size: clamp(2rem, 3vw, 2.75rem);
+    line-height: 1.1; color: var(--dark);
+    margin-bottom: 1.25rem;
+  }
+  .section-title em { font-style: italic; color: var(--terracota); }
+  .section-body {
+    font-size: 0.95rem; line-height: 1.8;
+    color: var(--mid); margin-bottom: 1.25rem;
+  }
+
+  .about-tags {
+    display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.5rem;
+  }
+  .tag {
+    background: var(--menta);
+    color: var(--salvia);
+    font-size: 0.72rem; font-weight: 600;
+    letter-spacing: 0.06em;
+    padding: 0.4rem 1rem; border-radius: 100px;
+  }
+
+  /* ── PILLARS ── */
+  .pillars-section {
+    background: var(--dark);
+    padding: 6rem 3rem;
+    position: relative; overflow: hidden;
+  }
+  .pillars-section::before {
+    content: '';
+    position: absolute; top: -200px; right: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(204,216,199,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .pillars-header {
+    text-align: center; max-width: 600px;
+    margin: 0 auto 4rem;
+  }
+  .pillars-header .section-eyebrow { justify-content: center; }
+  .pillars-header .section-eyebrow::before { display: none; }
+  .pillars-header .section-title { color: var(--crema); }
+  .pillars-header .section-body { color: rgba(250,248,245,0.6); }
+
+  .pillars-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 1.25rem; max-width: 1200px; margin: 0 auto;
+  }
+  .pillar-card {
+    background: rgba(255,255,255,0.04);
+    border: 0.5px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    padding: 2rem 1.5rem;
+    transition: background 0.3s, border-color 0.3s, transform 0.3s;
+    position: relative; overflow: hidden;
+  }
+  .pillar-card::after {
+    content: '';
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 3px;
+    transition: opacity 0.3s;
+  }
+  .pillar-card.mind::after { background: #1D9E75; }
+  .pillar-card.body::after { background: var(--terracota); }
+  .pillar-card.spirit::after { background: #7F77DD; }
+  .pillar-card.community::after { background: var(--dorado); }
+  .pillar-card:hover {
+    background: rgba(255,255,255,0.07);
+    border-color: rgba(255,255,255,0.15);
+    transform: translateY(-4px);
+  }
+
+  .pillar-big-icon {
+    width: 48px; height: 48px;
+    margin-bottom: 1.25rem;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .pillar-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700; font-size: 1.3rem;
+    color: var(--crema); margin-bottom: 0.5rem;
+  }
+  .pillar-card p {
+    font-size: 0.85rem; line-height: 1.7;
+    color: rgba(250,248,245,0.55);
+    margin-bottom: 1.25rem;
+  }
+  .pillar-tags {
+    display: flex; flex-wrap: wrap; gap: 0.4rem;
+  }
+  .pillar-tag {
+    font-size: 0.65rem; font-weight: 600;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 0.3rem 0.7rem; border-radius: 100px;
+  }
+  .mind .pillar-tag { background: rgba(29,158,117,0.15); color: #4ECBA0; }
+  .body .pillar-tag { background: rgba(184,92,69,0.15); color: var(--petalo); }
+  .spirit .pillar-tag { background: rgba(127,119,221,0.15); color: #B0ACEE; }
+  .community .pillar-tag { background: rgba(232,201,154,0.15); color: var(--dorado); }
+
+  /* ── ASSESSMENT CTA ── */
+  .assessment {
+    padding: 6rem 3rem;
+    background: var(--crema);
+    position: relative; overflow: hidden;
+  }
+  .assessment-inner {
+    max-width: 1200px; margin: 0 auto;
+    display: grid; grid-template-columns: 1fr 1.2fr;
+    gap: 5rem; align-items: center;
+  }
+  .assessment-content {}
+  .assessment-score-visual {
+    background: white;
+    border-radius: 24px;
+    padding: 2.5rem;
+    box-shadow: 0 16px 48px rgba(0,0,0,0.07);
+    position: relative;
+  }
+  .assessment-score-visual h4 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700; font-size: 1.1rem;
+    margin-bottom: 1.5rem; color: var(--dark);
+  }
+
+  .score-bars {
+    display: flex; flex-direction: column; gap: 1rem;
+  }
+  .score-bar-row {
+    display: flex; flex-direction: column; gap: 0.35rem;
+  }
+  .score-bar-label {
+    display: flex; justify-content: space-between;
+    font-size: 0.78rem; font-weight: 600; color: var(--dark);
+  }
+  .score-bar-label span:last-child { color: var(--mid); font-weight: 400; }
+  .score-bar-track {
+    height: 6px; background: #F0EEEB; border-radius: 100px;
+    overflow: hidden;
+  }
+  .score-bar-fill {
+    height: 100%; border-radius: 100px;
+    transition: width 1.5s cubic-bezier(.23,1,.32,1);
+  }
+
+  .persona-chip {
+    margin-top: 1.5rem;
+    background: var(--menta);
+    border-radius: 12px; padding: 1rem 1.25rem;
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .persona-chip-icon {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--salvia);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .persona-chip-text h5 {
+    font-size: 0.85rem; font-weight: 600; color: var(--dark);
+  }
+  .persona-chip-text p {
+    font-size: 0.75rem; color: var(--mid); margin-top: 1px;
+  }
+
+  .assessment-features {
+    display: flex; flex-direction: column; gap: 1rem; margin: 2rem 0;
+  }
+  .assessment-feature {
+    display: flex; align-items: flex-start; gap: 0.75rem;
+  }
+  .feat-icon {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: var(--menta);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: 2px;
+  }
+  .assessment-feature-text h5 {
+    font-size: 0.88rem; font-weight: 600; color: var(--dark); margin-bottom: 0.15rem;
+  }
+  .assessment-feature-text p {
+    font-size: 0.8rem; color: var(--mid); line-height: 1.5;
+  }
+
+  /* ── SERVICES ── */
+  .services {
+    padding: 6rem 3rem;
+    background: var(--off-white);
+    max-width: 1200px; margin: 0 auto;
+  }
+  .services-header {
+    display: flex; justify-content: space-between; align-items: flex-end;
+    margin-bottom: 3rem;
+  }
+  .services-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+  .service-card {
+    border-radius: 20px; padding: 2rem;
+    position: relative; overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .service-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 48px rgba(0,0,0,0.1);
+  }
+  .service-card.coaching { background: var(--dark); }
+  .service-card.yoga { background: var(--brisa); }
+  .service-card.intensive { background: var(--dorado); }
+
+  .service-icon {
+    width: 44px; height: 44px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 1.5rem;
+  }
+  .coaching .service-icon { background: rgba(255,255,255,0.1); }
+  .yoga .service-icon { background: rgba(255,255,255,0.4); }
+  .intensive .service-icon { background: rgba(255,255,255,0.4); }
+
+  .service-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700; font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+  }
+  .coaching h3 { color: var(--crema); }
+  .yoga h3, .intensive h3 { color: var(--dark); }
+
+  .service-card p {
+    font-size: 0.85rem; line-height: 1.7; margin-bottom: 1.5rem;
+  }
+  .coaching p { color: rgba(250,248,245,0.6); }
+  .yoga p, .intensive p { color: var(--mid); }
+
+  .service-price {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700; font-size: 1.5rem;
+    margin-bottom: 1.25rem;
+  }
+  .coaching .service-price { color: var(--dorado); }
+  .yoga .service-price, .intensive .service-price { color: var(--dark); }
+
+  .service-btn {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    font-size: 0.78rem; font-weight: 600;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    text-decoration: none; padding: 0.6rem 1.4rem;
+    border-radius: 100px; transition: all 0.2s;
+  }
+  .coaching .service-btn { background: var(--terracota); color: white; }
+  .coaching .service-btn:hover { background: var(--rosa-seca); }
+  .yoga .service-btn { background: var(--salvia); color: white; }
+  .yoga .service-btn:hover { background: #4A6259; }
+  .intensive .service-btn { background: var(--dark); color: white; }
+  .intensive .service-btn:hover { background: var(--mid); }
+
+  /* ── TESTIMONIALS ── */
+  .testimonials {
+    padding: 6rem 3rem;
+    background: var(--menta);
+    position: relative; overflow: hidden;
+  }
+  .testimonials-inner { max-width: 1200px; margin: 0 auto; }
+  .testimonials-header { text-align: center; margin-bottom: 3rem; }
+
+  .testimonials-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+  .testimonial-card {
+    background: white;
+    border-radius: 20px; padding: 2rem;
+    position: relative;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+    transition: transform 0.3s;
+  }
+  .testimonial-card:hover { transform: translateY(-4px); }
+
+  .quote-mark {
+    font-family: 'Playfair Display', serif;
+    font-size: 4rem; line-height: 1;
+    color: var(--petalo); margin-bottom: 0.5rem;
+    display: block;
+  }
+  .testimonial-card p {
+    font-size: 0.9rem; line-height: 1.75;
+    color: var(--mid); margin-bottom: 1.5rem;
+    font-style: italic;
+  }
+  .testimonial-author {
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .author-avatar {
+    width: 40px; height: 40px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-weight: 700; color: white; font-size: 0.9rem;
+    flex-shrink: 0;
+  }
+  .testimonial-author-info h5 {
+    font-size: 0.85rem; font-weight: 600; color: var(--dark);
+  }
+  .testimonial-author-info p {
+    font-size: 0.72rem; color: var(--mid);
+    font-style: normal; margin: 0;
+  }
+
+  /* ── HOOKS STRIP ── */
+  .hooks-section {
+    background: var(--dark);
+    padding: 5rem 3rem;
+    position: relative; overflow: hidden;
+  }
+  .hooks-inner { max-width: 1200px; margin: 0 auto; }
+  .hooks-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem; margin-top: 3rem;
+  }
+  .hook-card {
+    border: 0.5px solid rgba(255,255,255,0.1);
+    border-radius: 16px; padding: 1.5rem;
+    transition: background 0.3s, border-color 0.3s;
+  }
+  .hook-card:hover {
+    background: rgba(255,255,255,0.04);
+    border-color: rgba(250,171,107,0.3);
+  }
+  .hook-card-cat {
+    font-size: 0.65rem; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--salvia); margin-bottom: 0.75rem;
+  }
+  .hook-card p {
+    font-family: 'Playfair Display', serif;
+    font-style: italic; font-size: 0.95rem;
+    line-height: 1.6; color: var(--crema);
+  }
+
+  /* ── FINAL CTA ── */
+  .final-cta {
+    padding: 8rem 3rem;
+    background: var(--terracota);
+    text-align: center; position: relative; overflow: hidden;
+  }
+  .final-cta::before {
+    content: '';
+    position: absolute; top: -150px; left: 50%;
+    transform: translateX(-50%);
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .final-cta .section-eyebrow { justify-content: center; color: var(--petalo); }
+  .final-cta .section-eyebrow::before { background: var(--petalo); }
+  .final-cta .section-title { color: white; margin-bottom: 1rem; }
+  .final-cta-sub {
+    font-family: 'Playfair Display', serif;
+    font-style: italic; font-size: 1.2rem;
+    color: rgba(255,255,255,0.75); margin-bottom: 2.5rem;
+  }
+  .final-cta-actions {
+    display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;
+  }
+  .btn-white {
+    background: white; color: var(--terracota);
+    padding: 0.9rem 2.25rem; border-radius: 100px;
+    font-size: 0.88rem; font-weight: 700;
+    letter-spacing: 0.05em; text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+  }
+  .btn-white:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.2);
+  }
+  .btn-white-ghost {
+    background: transparent; color: white;
+    border: 1.5px solid rgba(255,255,255,0.5);
+    padding: 0.9rem 2.25rem; border-radius: 100px;
+    font-size: 0.88rem; font-weight: 500;
+    letter-spacing: 0.05em; text-decoration: none;
+    transition: border-color 0.2s, transform 0.2s;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+  }
+  .btn-white-ghost:hover {
+    border-color: white;
+    transform: translateY(-2px);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--dark);
+    padding: 3rem;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 1rem;
+  }
+  .footer-logo {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900; font-size: 1.1rem;
+    color: var(--crema);
+  }
+  .footer-logo span { color: var(--terracota); }
+  .footer-links {
+    display: flex; gap: 2rem; list-style: none;
+  }
+  .footer-links a {
+    font-size: 0.75rem; font-weight: 500;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    color: rgba(250,248,245,0.45); text-decoration: none;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--petalo); }
+  .footer-copy {
+    font-size: 0.72rem; color: rgba(250,248,245,0.3);
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes spin-slow {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
+  }
+
+  .reveal {
+    opacity: 0; transform: translateY(28px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+  .reveal.visible {
+    opacity: 1; transform: translateY(0);
+  }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.3s; }
+  .reveal-delay-4 { transition-delay: 0.4s; }
+
+  /* ── MISC ── */
+  .services-section-wrap {
+    background: var(--off-white);
+    padding: 6rem 0;
+  }
+  .services-section-inner {
+    max-width: 1200px; margin: 0 auto; padding: 0 3rem;
+  }
+
+  @media (max-width: 900px) {
+    nav { padding: 1rem 1.5rem; }
+    nav.scrolled { padding: 0.75rem 1.5rem; }
+    .nav-links { display: none; }
+    .hero { grid-template-columns: 1fr; }
+    .hero-right { display: none; }
+    .hero-left { padding: 7rem 2rem 4rem; }
+    .about { grid-template-columns: 1fr; padding: 4rem 1.5rem; gap: 3rem; }
+    .pillars-grid { grid-template-columns: 1fr 1fr; }
+    .assessment-inner { grid-template-columns: 1fr; }
+    .services-grid { grid-template-columns: 1fr; }
+    .testimonials-grid { grid-template-columns: 1fr; }
+    .hooks-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- CUSTOM CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="nav-logo">Wellness <span>by Yaz</span></a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#pillars">Pillars</a></li>
+    <li><a href="#assessment">Assessment</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#assessment" class="nav-cta">Take the Assessment</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow">Wellness Coach · Yoga Instructor · Community Builder</div>
+    <h1 class="hero-title">
+      Live well.<br>
+      <em>Feel lit.</em>
+    </h1>
+    <p class="hero-sub">Wellness that feels light and lit.</p>
+    <p class="hero-desc">For high-achievers who are tired of pouring from an empty cup. This is your permission to rest, reconnect, and actually thrive — not just push through.</p>
+    <div class="hero-actions">
+      <a href="#assessment" class="btn-primary">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        Take the Assessment
+      </a>
+      <a href="#services" class="btn-ghost">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 8 16 12 12 16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+        See my services
+      </a>
+    </div>
+    <div class="hero-stat-row">
+      <div class="hero-stat">
+        <span>50+</span>
+        <p>Plants at home</p>
+      </div>
+      <div class="hero-stat">
+        <span>4</span>
+        <p>Wellness pillars</p>
+      </div>
+      <div class="hero-stat">
+        <span>1</span>
+        <p>You, whole</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-right">
+    <!-- Botanical SVG Background -->
+    <div class="hero-botanical">
+      <svg width="100%" height="100%" viewBox="0 0 500 600" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" style="position:absolute;inset:0;opacity:0.12">
+        <circle cx="400" cy="100" r="200" fill="#CCD8C7"/>
+        <circle cx="100" cy="500" r="150" fill="#E8C99A"/>
+        <ellipse cx="300" cy="300" rx="80" ry="200" fill="#B85C45" opacity="0.4" transform="rotate(30 300 300)"/>
+      </svg>
+    </div>
+
+    <div class="hero-right-content">
+      <!-- Botanical plant SVG -->
+      <svg width="120" height="120" viewBox="0 0 120 120" style="margin-bottom:2rem;animation:fadeUp 0.9s 0.4s both;opacity:0" xmlns="http://www.w3.org/2000/svg">
+        <!-- Stem -->
+        <line x1="60" y1="110" x2="60" y2="45" stroke="#628474" stroke-width="2.5" stroke-linecap="round"/>
+        <!-- Left leaf -->
+        <path d="M60 75 Q30 55 25 30 Q50 40 60 65" fill="#8A9E7E" opacity="0.8"/>
+        <line x1="60" y1="70" x2="38" y2="45" stroke="#628474" stroke-width="1.5" stroke-linecap="round"/>
+        <!-- Right leaf -->
+        <path d="M60 60 Q90 40 95 15 Q70 30 60 55" fill="#CCD8C7"/>
+        <line x1="60" y1="58" x2="82" y2="32" stroke="#628474" stroke-width="1.5" stroke-linecap="round"/>
+        <!-- Flower center -->
+        <circle cx="60" cy="38" r="8" fill="#B85C45"/>
+        <!-- Petals -->
+        <ellipse cx="60" cy="24" rx="5" ry="9" fill="#FAB6AB" transform="rotate(0 60 38)"/>
+        <ellipse cx="60" cy="24" rx="5" ry="9" fill="#FAB6AB" transform="rotate(60 60 38)"/>
+        <ellipse cx="60" cy="24" rx="5" ry="9" fill="#FAB6AB" transform="rotate(120 60 38)"/>
+        <ellipse cx="60" cy="24" rx="5" ry="9" fill="#FAB6AB" transform="rotate(180 60 38)"/>
+        <ellipse cx="60" cy="24" rx="5" ry="9" fill="#FAB6AB" transform="rotate(240 60 38)"/>
+        <ellipse cx="60" cy="24" rx="5" ry="9" fill="#FAB6AB" transform="rotate(300 60 38)"/>
+        <!-- Soil -->
+        <ellipse cx="60" cy="112" rx="22" ry="8" fill="#8B3A3A" opacity="0.4"/>
+      </svg>
+
+      <div class="pillar-preview">
+        <div class="pillar-card-mini mind">
+          <div class="pillar-icon-wrap">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1D9E75" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96-.46 2.5 2.5 0 0 1-1.04-3.3A3 3 0 0 1 2 13c0-1.38.93-2.55 2.2-2.9A2.5 2.5 0 0 1 9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96-.46 2.5 2.5 0 0 0 1.04-3.3A3 3 0 0 0 22 13c0-1.38-.93-2.55-2.2-2.9A2.5 2.5 0 0 0 14.5 2Z"/></svg>
+          </div>
+          <h4>Mind</h4>
+          <p>Clarity, creativity & confident action</p>
+        </div>
+        <div class="pillar-card-mini body">
+          <div class="pillar-icon-wrap">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#B85C45" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          </div>
+          <h4>Body</h4>
+          <p>Strength, breath & counting colors</p>
+        </div>
+        <div class="pillar-card-mini spirit">
+          <div class="pillar-icon-wrap">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#7F77DD" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          </div>
+          <h4>Spirit</h4>
+          <p>Reverence, roots & connection</p>
+        </div>
+        <div class="pillar-card-mini community">
+          <div class="pillar-icon-wrap">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#B88A14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <h4>Community</h4>
+          <p>Local roots & collective care</p>
+        </div>
+      </div>
+
+      <div class="hero-mission">
+        <p class="hero-mission-text">"You'll figure it out."</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-strip">
+  <div class="marquee-inner">
+    <!-- Duplicate for seamless loop -->
+    <span class="marquee-item">Wellness that feels light and lit <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Mind · Body · Spirit · Community <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Count colors, not calories <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Joy is resistance <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Rest is not a reward — it's a right <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Yoga en español <span class="marquee-dot"></span></span>
+    <span class="marquee-item">You'll figure it out <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Wellness that feels light and lit <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Mind · Body · Spirit · Community <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Count colors, not calories <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Joy is resistance <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Rest is not a reward — it's a right <span class="marquee-dot"></span></span>
+    <span class="marquee-item">Yoga en español <span class="marquee-dot"></span></span>
+    <span class="marquee-item">You'll figure it out <span class="marquee-dot"></span></span>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about" class="about">
+  <div class="about-visual reveal">
+    <div class="about-img-frame">
+      <!-- Large botanical illustration -->
+      <svg width="300" height="340" viewBox="0 0 300 340" xmlns="http://www.w3.org/2000/svg">
+        <!-- Monstera leaf -->
+        <path d="M150 280 Q80 220 70 140 Q100 100 130 90 Q160 80 180 110 Q200 140 190 180 Q175 230 150 280Z" fill="#8A9E7E" opacity="0.7"/>
+        <path d="M150 280 Q80 220 70 140" stroke="#628474" stroke-width="2" fill="none"/>
+        <!-- Holes in monstera -->
+        <path d="M110 155 Q105 145 115 140 Q125 138 122 150Z" fill="#CCD8C7" opacity="0.8"/>
+        <path d="M140 130 Q135 118 147 115 Q158 113 155 126Z" fill="#CCD8C7" opacity="0.8"/>
+        <!-- Second leaf -->
+        <path d="M150 280 Q220 210 230 130 Q210 90 185 85 Q165 82 155 105 Q145 130 155 170 Q160 220 150 280Z" fill="#CCD8C7" opacity="0.6"/>
+        <!-- Stem -->
+        <line x1="150" y1="280" x2="150" y2="310" stroke="#628474" stroke-width="3" stroke-linecap="round"/>
+        <!-- Hibiscus -->
+        <g transform="translate(80, 60)">
+          <circle cx="0" cy="0" r="12" fill="#B85C45"/>
+          <ellipse cx="0" cy="-22" rx="8" ry="14" fill="#FAB6AB" opacity="0.9"/>
+          <ellipse cx="0" cy="-22" rx="8" ry="14" fill="#FAB6AB" opacity="0.9" transform="rotate(60 0 0)"/>
+          <ellipse cx="0" cy="-22" rx="8" ry="14" fill="#FAB6AB" opacity="0.9" transform="rotate(120 0 0)"/>
+          <ellipse cx="0" cy="-22" rx="8" ry="14" fill="#FAB6AB" opacity="0.9" transform="rotate(180 0 0)"/>
+          <ellipse cx="0" cy="-22" rx="8" ry="14" fill="#FAB6AB" opacity="0.9" transform="rotate(240 0 0)"/>
+          <ellipse cx="0" cy="-22" rx="8" ry="14" fill="#FAB6AB" opacity="0.9" transform="rotate(300 0 0)"/>
+          <circle cx="0" cy="0" r="6" fill="#8B3A3A"/>
+        </g>
+        <!-- Marigold -->
+        <g transform="translate(220, 80)">
+          <circle cx="0" cy="0" r="10" fill="#E8C99A"/>
+          <ellipse cx="0" cy="-18" rx="6" ry="11" fill="#E8C99A" opacity="0.85"/>
+          <ellipse cx="0" cy="-18" rx="6" ry="11" fill="#B85C45" opacity="0.7" transform="rotate(45 0 0)"/>
+          <ellipse cx="0" cy="-18" rx="6" ry="11" fill="#E8C99A" opacity="0.85" transform="rotate(90 0 0)"/>
+          <ellipse cx="0" cy="-18" rx="6" ry="11" fill="#B85C45" opacity="0.7" transform="rotate(135 0 0)"/>
+          <ellipse cx="0" cy="-18" rx="6" ry="11" fill="#E8C99A" opacity="0.85" transform="rotate(180 0 0)"/>
+          <ellipse cx="0" cy="-18" rx="6" ry="11" fill="#B85C45" opacity="0.7" transform="rotate(225 0 0)"/>
+          <ellipse cx="0" cy="-18" rx="6" ry="11" fill="#E8C99A" opacity="0.85" transform="rotate(270 0 0)"/>
+          <ellipse cx="0" cy="-18" rx="6" ry="11" fill="#B85C45" opacity="0.7" transform="rotate(315 0 0)"/>
+          <circle cx="0" cy="0" r="5" fill="#B85C45"/>
+        </g>
+        <!-- Small leaves -->
+        <path d="M200 230 Q230 210 240 185 Q220 190 200 215Z" fill="#CCD8C7" opacity="0.7"/>
+        <path d="M70 200 Q45 185 38 162 Q58 170 70 195Z" fill="#8A9E7E" opacity="0.6"/>
+      </svg>
+    </div>
+    <div class="about-badge">
+      <span>SW</span>
+      <p>Chicago<br>Born</p>
+    </div>
+  </div>
+
+  <div class="about-content">
+    <p class="section-eyebrow reveal">Meet Yaz</p>
+    <h2 class="section-title reveal reveal-delay-1">Raised on the Southwest Side. <em>Built for this.</em></h2>
+    <p class="section-body reveal reveal-delay-2">
+      Daughter of Mexican immigrants. Raised in Gage Park, Chicago. I grew up watching my parents pour everything into giving us a better life — and I learned early that our communities are full of power, creativity, and innovation that the world doesn't always reflect back to us.
+    </p>
+    <p class="section-body reveal reveal-delay-3">
+      That's why I built a wellness practice that goes beyond the gym and the meal plan. I work with high-achievers — especially first-gen folks — who are doing all the things but quietly running on empty. My job is to help you find your way back to yourself.
+    </p>
+    <div class="about-tags reveal reveal-delay-4">
+      <span class="tag">Wellness Coach</span>
+      <span class="tag">Yoga Instructor</span>
+      <span class="tag">Nonprofit Leader</span>
+      <span class="tag">Community Builder</span>
+      <span class="tag">Content Creator</span>
+      <span class="tag">Plant Mom · 50+</span>
+      <span class="tag">Yoga en Español</span>
+    </div>
+  </div>
+</section>
+
+<!-- PILLARS -->
+<section id="pillars" class="pillars-section">
+  <div class="pillars-header">
+    <p class="section-eyebrow reveal">The Framework</p>
+    <h2 class="section-title reveal reveal-delay-1">Four pillars. <em>One whole life.</em></h2>
+    <p class="section-body reveal reveal-delay-2">Wellness isn't just what you eat or how you move. It's how you think, how you connect, what you believe in, and how you show up for the world.</p>
+  </div>
+
+  <div class="pillars-grid">
+    <div class="pillar-card mind reveal">
+      <div class="pillar-big-icon">
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Brain/mind icon -->
+          <path d="M16 34a4 4 0 0 1-7.94-.77 4 4 0 0 1-1.66-5.27A5 5 0 0 1 3 22a5 5 0 0 1 3.67-4.83A4 4 0 0 1 16 7.5v26.5Z" stroke="#4ECBA0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <path d="M24 34a4 4 0 0 0 7.94-.77 4 4 0 0 0 1.66-5.27A5 5 0 0 0 37 22a5 5 0 0 0-3.67-4.83A4 4 0 0 0 24 7.5V34Z" stroke="#4ECBA0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <line x1="20" y1="8" x2="20" y2="34" stroke="#4ECBA0" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <h3>Mind</h3>
+      <p>Clarity, creativity, and the confidence to take the next step anyway. A healthy mind doesn't mean having it all figured out — it means trusting yourself enough to move forward. You'll figure it out.</p>
+      <div class="pillar-tags">
+        <span class="pillar-tag">Clarity</span>
+        <span class="pillar-tag">Creativity</span>
+        <span class="pillar-tag">Growth</span>
+        <span class="pillar-tag">Intention</span>
+      </div>
+    </div>
+
+    <div class="pillar-card body reveal reveal-delay-1">
+      <div class="pillar-big-icon">
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Body/movement icon -->
+          <circle cx="20" cy="9" r="3.5" stroke="#FAB6AB" stroke-width="1.8"/>
+          <path d="M12 18 Q20 14 28 18" stroke="#FAB6AB" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+          <path d="M20 14 L20 26" stroke="#FAB6AB" stroke-width="1.8" stroke-linecap="round"/>
+          <path d="M20 22 L14 30" stroke="#FAB6AB" stroke-width="1.8" stroke-linecap="round"/>
+          <path d="M20 22 L26 30" stroke="#FAB6AB" stroke-width="1.8" stroke-linecap="round"/>
+          <!-- Leaf accent -->
+          <path d="M30 8 Q36 5 37 12 Q31 14 30 8Z" fill="#FAB6AB" opacity="0.4"/>
+        </svg>
+      </div>
+      <h3>Body</h3>
+      <p>Your body is not a project to optimize. It's a home to honor. Strength, breath, rest, and pleasure — all of it counts. Count colors, not calories.</p>
+      <div class="pillar-tags">
+        <span class="pillar-tag">Strength</span>
+        <span class="pillar-tag">Breath</span>
+        <span class="pillar-tag">Recovery</span>
+        <span class="pillar-tag">Pleasure</span>
+      </div>
+    </div>
+
+    <div class="pillar-card spirit reveal reveal-delay-2">
+      <div class="pillar-big-icon">
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Spirit/star/sun icon -->
+          <circle cx="20" cy="20" r="5" stroke="#B0ACEE" stroke-width="1.8"/>
+          <line x1="20" y1="4" x2="20" y2="10" stroke="#B0ACEE" stroke-width="1.8" stroke-linecap="round"/>
+          <line x1="20" y1="30" x2="20" y2="36" stroke="#B0ACEE" stroke-width="1.8" stroke-linecap="round"/>
+          <line x1="4" y1="20" x2="10" y2="20" stroke="#B0ACEE" stroke-width="1.8" stroke-linecap="round"/>
+          <line x1="30" y1="20" x2="36" y2="20" stroke="#B0ACEE" stroke-width="1.8" stroke-linecap="round"/>
+          <line x1="8.7" y1="8.7" x2="13" y2="13" stroke="#B0ACEE" stroke-width="1.8" stroke-linecap="round"/>
+          <line x1="27" y1="27" x2="31.3" y2="31.3" stroke="#B0ACEE" stroke-width="1.8" stroke-linecap="round"/>
+          <line x1="31.3" y1="8.7" x2="27" y2="13" stroke="#B0ACEE" stroke-width="1.8" stroke-linecap="round"/>
+          <line x1="13" y1="27" x2="8.7" y2="31.3" stroke="#B0ACEE" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <h3>Spirit</h3>
+      <p>The thread connecting you to everything larger than yourself — ancestors, earth, plants, animals, your inner child, your future self. Encomendándote a Dios.</p>
+      <div class="pillar-tags">
+        <span class="pillar-tag">Ancestry</span>
+        <span class="pillar-tag">Prayer</span>
+        <span class="pillar-tag">Nature</span>
+        <span class="pillar-tag">Stillness</span>
+      </div>
+    </div>
+
+    <div class="pillar-card community reveal reveal-delay-3">
+      <div class="pillar-big-icon">
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Community icon -->
+          <circle cx="14" cy="13" r="4" stroke="#E8C99A" stroke-width="1.8"/>
+          <circle cx="26" cy="13" r="4" stroke="#E8C99A" stroke-width="1.8"/>
+          <circle cx="20" cy="24" r="4" stroke="#E8C99A" stroke-width="1.8"/>
+          <path d="M7 30 Q7 24 14 24" stroke="#E8C99A" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+          <path d="M33 30 Q33 24 26 24" stroke="#E8C99A" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+          <path d="M14 24 Q14 17 20 17 Q26 17 26 24" stroke="#E8C99A" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+        </svg>
+      </div>
+      <h3>Community</h3>
+      <p>Wellness doesn't happen in isolation. Your neighborhood, your relationships, the sociopolitical world around you — all of it is part of your health. Find your role in the pursuit of justice and belonging.</p>
+      <div class="pillar-tags">
+        <span class="pillar-tag">Belonging</span>
+        <span class="pillar-tag">Local Roots</span>
+        <span class="pillar-tag">Action</span>
+        <span class="pillar-tag">Connection</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ASSESSMENT -->
+<section id="assessment" class="assessment">
+  <div class="assessment-inner">
+    <div class="assessment-content">
+      <p class="section-eyebrow reveal">Wellness Assessment</p>
+      <h2 class="section-title reveal reveal-delay-1">Find out where you <em>actually</em> are.</h2>
+      <p class="section-body reveal reveal-delay-2">
+        Not just in the gym. Not just with your meal prep. Across all four pillars — Mind, Body, Spirit, and Community — this 20-minute assessment will show you where you're thriving and where you have room to grow.
+      </p>
+      <p class="section-body reveal reveal-delay-2">
+        No judgment. No hierarchy. Just a clear, honest mirror — and a path forward that actually fits your real life.
+      </p>
+
+      <div class="assessment-features reveal reveal-delay-3">
+        <div class="assessment-feature">
+          <div class="feat-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#628474" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+          </div>
+          <div class="assessment-feature-text">
+            <h5>30 questions · 20 minutes</h5>
+            <p>Scale-based, thoughtful, and designed to make you reflect — not fill out a form.</p>
+          </div>
+        </div>
+        <div class="assessment-feature">
+          <div class="feat-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#628474" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+          </div>
+          <div class="assessment-feature-text">
+            <h5>Your wellness type + pillar breakdown</h5>
+            <p>A named persona and Co-Star-style pillar summaries — strengths, challenges, possibilities.</p>
+          </div>
+        </div>
+        <div class="assessment-feature">
+          <div class="feat-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#628474" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6A19.79 19.79 0 0 1 2.12 4.18 2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          </div>
+          <div class="assessment-feature-text">
+            <h5>Immediate action + next steps</h5>
+            <p>A grounding micro-action you can do right now, plus a clear path to work with Yaz.</p>
+          </div>
+        </div>
+        <div class="assessment-feature">
+          <div class="feat-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#628474" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          </div>
+          <div class="assessment-feature-text">
+            <h5>Results sent to your email</h5>
+            <p>Save, revisit, and share your full breakdown whenever you need a reset.</p>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top:2rem;" class="reveal reveal-delay-4">
+        <a href="#" class="btn-primary" style="font-size:0.92rem;padding:1rem 2.5rem;">
+          Take the Free Assessment
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="assessment-score-visual reveal reveal-delay-2">
+      <h4>Your wellness snapshot</h4>
+      <div class="score-bars">
+        <div class="score-bar-row">
+          <div class="score-bar-label"><span>Mind</span><span>Strong foundation</span></div>
+          <div class="score-bar-track"><div class="score-bar-fill" style="width:78%;background:#1D9E75;"></div></div>
+        </div>
+        <div class="score-bar-row">
+          <div class="score-bar-label"><span>Body</span><span>Room to grow</span></div>
+          <div class="score-bar-track"><div class="score-bar-fill" style="width:52%;background:#B85C45;"></div></div>
+        </div>
+        <div class="score-bar-row">
+          <div class="score-bar-label"><span>Spirit</span><span>Needs attention</span></div>
+          <div class="score-bar-track"><div class="score-bar-fill" style="width:38%;background:#7F77DD;"></div></div>
+        </div>
+        <div class="score-bar-row">
+          <div class="score-bar-label"><span>Community</span><span>Thriving</span></div>
+          <div class="score-bar-track"><div class="score-bar-fill" style="width:85%;background:#E8C99A;"></div></div>
+        </div>
+      </div>
+      <div class="persona-chip">
+        <div class="persona-chip-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <div class="persona-chip-text">
+          <h5>You are: The Visionary</h5>
+          <p>Big ideas, full notes app. Ready to take the next step.</p>
+        </div>
+      </div>
+
+      <!-- Decorative quote -->
+      <div style="margin-top:1.5rem;padding-top:1.5rem;border-top:0.5px solid #F0EEEB;">
+        <p style="font-family:'Playfair Display',serif;font-style:italic;font-size:0.9rem;color:#B85C45;text-align:center;">
+          "drop your shoulders.<br>unclench your jaw.<br>take one full breath."
+        </p>
+        <p style="font-size:0.7rem;color:#888;text-align:center;margin-top:0.5rem;letter-spacing:0.06em;text-transform:uppercase;">your immediate get-to-do</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<div class="services-section-wrap" id="services">
+  <div class="services-section-inner">
+    <div class="services-header">
+      <div>
+        <p class="section-eyebrow reveal">Work With Yaz</p>
+        <h2 class="section-title reveal reveal-delay-1">Choose your <em>path.</em></h2>
+      </div>
+      <a href="#" class="btn-primary reveal" style="margin-bottom:0.5rem;">See all services</a>
+    </div>
+    <div class="services-grid">
+      <div class="service-card coaching reveal">
+        <div class="service-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E8C99A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        </div>
+        <h3>1:1 Coaching</h3>
+        <p>12 weekly sessions built around your actual life. We create a wellness plan that is sustainable, realistic, and rooted in all four pillars — not just the ones your gym app tracks.</p>
+        <div class="service-price">$1,200</div>
+        <a href="#" class="service-btn coaching">Book a consult
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+
+      <div class="service-card yoga reveal reveal-delay-1">
+        <div class="service-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#628474" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2"/><path d="M12 7 Q8 10 7 14 Q9 13 12 14 Q15 13 17 14 Q16 10 12 7Z"/><path d="M7 14 Q5 17 4 20"/><path d="M17 14 Q19 17 20 20"/></svg>
+        </div>
+        <h3>Yoga Classes</h3>
+        <p>Flow and sculpt classes that bring the energy — genre-themed music, Spanish-language options, and community that shows up for each other. $15/class or private events.</p>
+        <div class="service-price">$15 – $200</div>
+        <a href="#" class="service-btn yoga">Join a class
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+
+      <div class="service-card intensive reveal reveal-delay-2">
+        <div class="service-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#B85C45" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        </div>
+        <h3>Wellness Intensive</h3>
+        <p>One powerful 90-minute session. A full wellness refresh and reset — we go deep across all four pillars and you walk away with clarity, momentum, and a plan.</p>
+        <div class="service-price">$111</div>
+        <a href="#" class="service-btn intensive">Book your reset
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <div class="testimonials-inner">
+    <div class="testimonials-header">
+      <p class="section-eyebrow reveal" style="justify-content:center;">— before & after::before{display:none}</p>
+      <p class="section-eyebrow reveal" style="justify-content:center;margin-bottom:0.5rem;">What people say</p>
+      <h2 class="section-title reveal reveal-delay-1">Feeling it <em>from the inside.</em></h2>
+    </div>
+    <div class="testimonials-grid">
+      <div class="testimonial-card reveal">
+        <span class="quote-mark">"</span>
+        <p>Working with Yaz changed how I think about rest. I used to feel guilty every time I took a break. Now I understand it's part of the work. My whole relationship with my body shifted.</p>
+        <div class="testimonial-author">
+          <div class="author-avatar" style="background:#B85C45;">M</div>
+          <div class="testimonial-author-info">
+            <h5>Marisol T.</h5>
+            <p>Entrepreneur, Chicago</p>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card reveal reveal-delay-1">
+        <span class="quote-mark">"</span>
+        <p>The yoga class en español felt like home. I didn't know how much I needed to move my body in my own language until I did. Yaz holds space in a way that is rare.</p>
+        <div class="testimonial-author">
+          <div class="author-avatar" style="background:#628474;">D</div>
+          <div class="testimonial-author-info">
+            <h5>Daniela R.</h5>
+            <p>Healthcare worker, Pilsen</p>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card reveal reveal-delay-2">
+        <span class="quote-mark">"</span>
+        <p>I came in feeling scattered and overwhelmed. I left with a plan that actually made sense for my life — not some ideal version of my life. That's the difference. Yaz gets it.</p>
+        <div class="testimonial-author">
+          <div class="author-avatar" style="background:#8B3A3A;">J</div>
+          <div class="testimonial-author-info">
+            <h5>Jordan M.</h5>
+            <p>Creative director, Chicago</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOOKS SECTION -->
+<section class="hooks-section">
+  <div class="hooks-inner">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:1rem;">
+      <div>
+        <p class="section-eyebrow reveal" style="color:var(--salvia);">On the mind</p>
+        <h2 class="section-title reveal reveal-delay-1" style="color:var(--crema);">Things worth <em>sitting with.</em></h2>
+      </div>
+      <a href="#" class="btn-ghost reveal" style="margin-bottom:0.5rem;">Follow on IG</a>
+    </div>
+    <div class="hooks-grid">
+      <div class="hook-card reveal">
+        <p class="hook-card-cat">On rest</p>
+        <p>"rest is not something you earn. it's something you're owed."</p>
+      </div>
+      <div class="hook-card reveal reveal-delay-1">
+        <p class="hook-card-cat">On the guilt spiral</p>
+        <p>"the problem isn't your discipline. it's the system you built that has no room for being human."</p>
+      </div>
+      <div class="hook-card reveal reveal-delay-2">
+        <p class="hook-card-cat">On wellness</p>
+        <p>"you can meal prep every sunday and still be deeply unwell."</p>
+      </div>
+      <div class="hook-card reveal reveal-delay-3">
+        <p class="hook-card-cat">First-gen</p>
+        <p>"we were raised to pour into everyone else. nobody taught us to refill."</p>
+      </div>
+      <div class="hook-card reveal reveal-delay-1">
+        <p class="hook-card-cat">On the body</p>
+        <p>"count colors, not calories."</p>
+      </div>
+      <div class="hook-card reveal reveal-delay-2">
+        <p class="hook-card-cat">On showing up</p>
+        <p>"if your wellness plan only works when life is perfect, it's not a wellness plan."</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final-cta">
+  <div style="position:relative;z-index:1;max-width:600px;margin:0 auto;">
+    <p class="section-eyebrow reveal">Ready?</p>
+    <h2 class="section-title reveal reveal-delay-1">Start with where you <em>are.</em></h2>
+    <p class="final-cta-sub reveal reveal-delay-2">Not where you think you should be. Not where you used to be. Right here, right now — that's enough to begin.</p>
+    <div class="final-cta-actions reveal reveal-delay-3">
+      <a href="#" class="btn-white">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        Take the Free Assessment
+      </a>
+      <a href="#" class="btn-white-ghost">
+        Book a coaching call
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </a>
+    </div>
+  </div>
+
+  <!-- Decorative botanical -->
+  <svg style="position:absolute;bottom:-2px;left:0;opacity:0.12;pointer-events:none;" width="300" height="200" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+    <path d="M30 200 Q20 150 60 120 Q90 95 100 130 Q110 165 80 180 Q55 195 30 200Z" fill="white"/>
+    <path d="M80 200 Q90 160 130 140 Q160 125 165 155 Q170 185 140 195Z" fill="white" opacity="0.6"/>
+  </svg>
+  <svg style="position:absolute;bottom:-2px;right:0;opacity:0.12;pointer-events:none;" width="300" height="200" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+    <path d="M270 200 Q280 150 240 120 Q210 95 200 130 Q190 165 220 180 Q245 195 270 200Z" fill="white"/>
+    <path d="M220 200 Q210 160 170 140 Q140 125 135 155 Q130 185 160 195Z" fill="white" opacity="0.6"/>
+  </svg>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Wellness <span>by Yaz</span></div>
+  <ul class="footer-links">
+    <li><a href="#">About</a></li>
+    <li><a href="#">Pillars</a></li>
+    <li><a href="#">Assessment</a></li>
+    <li><a href="#">Services</a></li>
+    <li><a href="#">Instagram</a></li>
+  </ul>
+  <p class="footer-copy">© 2025 Wellness by Yaz · Chicago, IL</p>
+</footer>
+
+<script>
+// Custom cursor
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+let mx = 0, my = 0, rx = 0, ry = 0;
+
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cursor.style.left = mx + 'px';
+  cursor.style.top = my + 'px';
+});
+
+function animateRing() {
+  rx += (mx - rx) * 0.12;
+  ry += (my - ry) * 0.12;
+  ring.style.left = rx + 'px';
+  ring.style.top = ry + 'px';
+  requestAnimationFrame(animateRing);
+}
+animateRing();
+
+document.querySelectorAll('a, button').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    cursor.style.transform = 'translate(-50%,-50%) scale(2)';
+    cursor.style.background = 'var(--petalo)';
+    ring.style.opacity = '0';
+  });
+  el.addEventListener('mouseleave', () => {
+    cursor.style.transform = 'translate(-50%,-50%) scale(1)';
+    cursor.style.background = 'var(--terracota)';
+    ring.style.opacity = '0.5';
+  });
+});
+
+// Scroll reveal
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.12 });
+
+document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+// Nav scroll
+window.addEventListener('scroll', () => {
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 40);
+});
+
+// Animate score bars on scroll
+const scoreObserver = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.querySelectorAll('.score-bar-fill').forEach(bar => {
+        bar.style.width = bar.style.width; // trigger reflow
+      });
+    }
+  });
+}, { threshold: 0.3 });
+
+document.querySelectorAll('.assessment-score-visual').forEach(el => scoreObserver.observe(el));
+
+// Fix the broken testimonials eyebrow
+document.querySelectorAll('.testimonials-header .section-eyebrow').forEach((el, i) => {
+  if (i === 0) el.style.display = 'none';
+});
+</script>
+</body>
+</html>
