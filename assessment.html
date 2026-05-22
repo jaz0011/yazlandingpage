@@ -1047,6 +1047,11 @@
       <input type="text" id="userName" placeholder="Your first name" autocomplete="given-name" maxlength="40">
     </div>
 
+    <div class="name-input-row">
+      <label for="userEmailInput">Your email address</label>
+      <input type="email" id="userEmailInput" placeholder="you@example.com" autocomplete="email" maxlength="100">
+    </div>
+
     <button class="btn-start" id="btnStart">
       Begin your assessment
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
@@ -1192,32 +1197,6 @@
         </button>
       </div>
     </div>
-  </div>
-</div>
-
-<!-- ══ SCREEN: EMAIL ══ -->
-<div class="screen hidden" id="screen-email">
-  <div class="email-inner">
-    <p class="email-eyebrow">Almost there</p>
-    <h2 class="email-title">
-      You did it.
-      <em>Now let's see you.</em>
-    </h2>
-    <p class="email-sub">Enter your email and we'll send your full wellness snapshot — including your persona, pillar breakdown, and next steps — so you can revisit it anytime.</p>
-    <div class="mini-score-preview" id="miniScorePreview">
-      <span class="mini-pill mind">Mind</span>
-      <span class="mini-pill body">Body</span>
-      <span class="mini-pill spirit">Spirit</span>
-      <span class="mini-pill community">Community</span>
-    </div>
-    <form class="email-form" id="emailForm" onsubmit="return false;">
-      <input type="email" id="userEmail" placeholder="your@email.com" autocomplete="email">
-      <button type="submit" class="btn-get-results" id="btnGetResults">
-        See my results
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-      </button>
-    </form>
-    <button class="skip-email" id="skipEmail">Skip — just show me my results</button>
   </div>
 </div>
 
@@ -1463,6 +1442,7 @@ const SECTION_INTROS = {
 // ── STATE ──────────────────────────────────────────────────────────────────────
 
 let userName = '';
+let userEmail = '';
 let answers = new Array(30).fill(null);
 let currentQ = -1; // -1 = showing a section intro
 let currentIntro = 'mind';
@@ -1473,7 +1453,6 @@ let showingIntro = true;
 const screens = {
   welcome: document.getElementById('screen-welcome'),
   quiz:    document.getElementById('screen-quiz'),
-  email:   document.getElementById('screen-email'),
   results: document.getElementById('screen-results'),
 };
 
@@ -1500,8 +1479,17 @@ function showScreen(name) {
 
 // ── WELCOME ──────────────────────────────────────────────────────────────────
 
+function submitEmailToGoogleForm(email) {
+  if (!email) return;
+  const formUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSehQE-NW7VTNIJVwqsrv8GHcFFn0FYYfMgpS5tm6wurFsoQlg/formResponse';
+  const body = new URLSearchParams({ 'entry.379780734': email });
+  fetch(formUrl, { method: 'POST', mode: 'no-cors', body }).catch(() => {});
+}
+
 document.getElementById('btnStart').addEventListener('click', () => {
   userName = document.getElementById('userName').value.trim() || 'friend';
+  userEmail = document.getElementById('userEmailInput').value.trim();
+  submitEmailToGoogleForm(userEmail);
   screens.welcome.classList.add('exit');
   setTimeout(() => {
     showScreen('quiz');
@@ -1510,6 +1498,10 @@ document.getElementById('btnStart').addEventListener('click', () => {
 });
 
 document.getElementById('userName').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('btnStart').click();
+});
+
+document.getElementById('userEmailInput').addEventListener('keydown', e => {
   if (e.key === 'Enter') document.getElementById('btnStart').click();
 });
 
@@ -1624,7 +1616,7 @@ document.getElementById('btnNext').addEventListener('click', () => {
     // Done with quiz
     document.getElementById('progressFill').style.width = '100%';
     screens.quiz.classList.add('exit');
-    setTimeout(() => showScreen('email'), 350);
+    setTimeout(() => showResultsScreen(), 350);
     return;
   }
 
@@ -1658,19 +1650,6 @@ document.getElementById('btnPrev').addEventListener('click', () => {
     slide.classList.remove('exit');
     goToQuestion(prevIdx);
   }, 300);
-});
-
-// ── EMAIL ────────────────────────────────────────────────────────────────────
-
-document.getElementById('btnGetResults').addEventListener('click', () => {
-  showResultsScreen();
-});
-document.getElementById('skipEmail').addEventListener('click', () => {
-  showResultsScreen();
-});
-document.getElementById('emailForm').addEventListener('submit', e => {
-  e.preventDefault();
-  showResultsScreen();
 });
 
 // ── SCORING ──────────────────────────────────────────────────────────────────
