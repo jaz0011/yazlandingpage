@@ -61,6 +61,7 @@
   /* ── SCREENS ── */
   .screen {
     position: fixed; inset: 0;
+    z-index: 1;
     display: flex; align-items: center; justify-content: center;
     transition: opacity 0.5s ease, transform 0.5s cubic-bezier(.23,1,.32,1);
     overflow-y: auto;
@@ -80,25 +81,28 @@
   /* ── BACK LINK ── */
   .back-link {
     position: fixed; top: 1.5rem; left: 2rem;
-    z-index: 200;
+    z-index: 50;
     display: flex; align-items: center; gap: 0.5rem;
     font-size: 0.75rem; font-weight: 600;
     letter-spacing: 0.08em; text-transform: uppercase;
     color: var(--mid); text-decoration: none;
-    transition: color 0.2s;
+    transition: color 0.2s, opacity 0.2s;
     opacity: 0.7;
   }
   .back-link:hover { color: var(--terracota); opacity: 1; }
+  .back-link.hidden-nav { opacity: 0; pointer-events: none; }
 
   .nav-wordmark {
     position: fixed; top: 1.5rem; right: 2rem;
-    z-index: 200;
+    z-index: 50;
     font-family: 'Playfair Display', serif;
     font-weight: 900; font-size: 1rem;
     color: var(--dark); text-decoration: none;
+    transition: opacity 0.2s;
     opacity: 0.6;
   }
   .nav-wordmark span { color: var(--terracota); }
+  .nav-wordmark.hidden-nav { opacity: 0; pointer-events: none; }
 
   /* ── WELCOME SCREEN ── */
   #screen-welcome {
@@ -242,9 +246,17 @@
     padding: 0;
   }
 
+  #screen-quiz {
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    padding: 0;
+  }
+
   .quiz-header {
-    position: fixed; top: 0; left: 0; right: 0;
-    z-index: 100;
+    position: sticky; top: 0;
+    z-index: 10;
+    width: 100%;
     padding: 0;
     background: var(--off-white);
   }
@@ -290,8 +302,8 @@
   .quiz-body {
     flex: 1;
     display: flex; align-items: center; justify-content: center;
-    padding: 7rem 2rem 5rem;
-    min-height: 100vh;
+    padding: 3rem 2rem 5rem;
+    min-height: calc(100vh - 62px);
   }
 
   .question-slide {
@@ -1468,6 +1480,15 @@ function showScreen(name) {
 
   const backLink = document.getElementById('backLink');
   const wordmark = document.getElementById('navWordmark');
+
+  if (name === 'quiz') {
+    backLink.classList.add('hidden-nav');
+    wordmark.classList.add('hidden-nav');
+  } else {
+    backLink.classList.remove('hidden-nav');
+    wordmark.classList.remove('hidden-nav');
+  }
+
   if (name === 'welcome') {
     backLink.style.color = 'rgba(250,248,245,0.45)';
     wordmark.style.color = 'var(--crema)';
