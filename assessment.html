@@ -1,0 +1,1863 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wellness Assessment · Wellness by Yaz</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=Public+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --terracota: #B85C45;
+    --salvia: #628474;
+    --menta: #CCD8C7;
+    --brisa: #C1DBDA;
+    --dorado: #E8C99A;
+    --petalo: #FAB6AB;
+    --rosa-seca: #8B3A3A;
+    --crema: #F4EEEC;
+    --off-white: #FAF8F5;
+    --dark: #1A1208;
+    --mid: #5C4A3A;
+    --mind-color: #1D9E75;
+    --body-color: #B85C45;
+    --spirit-color: #7F77DD;
+    --community-color: #C49A1A;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Public Sans', sans-serif;
+    background: var(--off-white);
+    color: var(--dark);
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  * { cursor: none !important; }
+  .cursor {
+    width: 10px; height: 10px;
+    background: var(--terracota);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none; z-index: 9999;
+    transition: transform 0.15s ease, width 0.2s, height 0.2s, background 0.2s;
+    transform: translate(-50%, -50%);
+  }
+  .cursor-ring {
+    width: 36px; height: 36px;
+    border: 1px solid var(--terracota);
+    border-radius: 50%;
+    position: fixed; top: 0; left: 0;
+    pointer-events: none; z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: transform 0.4s cubic-bezier(.23,1,.32,1), opacity 0.3s;
+    opacity: 0.5;
+  }
+
+  /* ── SCREENS ── */
+  .screen {
+    position: fixed; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    transition: opacity 0.5s ease, transform 0.5s cubic-bezier(.23,1,.32,1);
+    overflow-y: auto;
+    padding: 2rem 1.5rem;
+  }
+  .screen.hidden {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(24px);
+  }
+  .screen.exit {
+    opacity: 0;
+    transform: translateY(-24px);
+    pointer-events: none;
+  }
+
+  /* ── BACK LINK ── */
+  .back-link {
+    position: fixed; top: 1.5rem; left: 2rem;
+    z-index: 200;
+    display: flex; align-items: center; gap: 0.5rem;
+    font-size: 0.75rem; font-weight: 600;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--mid); text-decoration: none;
+    transition: color 0.2s;
+    opacity: 0.7;
+  }
+  .back-link:hover { color: var(--terracota); opacity: 1; }
+
+  .nav-wordmark {
+    position: fixed; top: 1.5rem; right: 2rem;
+    z-index: 200;
+    font-family: 'Playfair Display', serif;
+    font-weight: 900; font-size: 1rem;
+    color: var(--dark); text-decoration: none;
+    opacity: 0.6;
+  }
+  .nav-wordmark span { color: var(--terracota); }
+
+  /* ── WELCOME SCREEN ── */
+  #screen-welcome {
+    background: var(--dark);
+    flex-direction: column;
+    text-align: center;
+  }
+  #screen-welcome .back-link { color: rgba(250,248,245,0.45); }
+  #screen-welcome .back-link:hover { color: var(--petalo); }
+  #screen-welcome .nav-wordmark { color: var(--crema); opacity: 0.5; }
+  #screen-welcome .nav-wordmark span { color: var(--petalo); }
+
+  .welcome-inner {
+    max-width: 560px;
+    display: flex; flex-direction: column; align-items: center;
+    gap: 0;
+  }
+  .welcome-botanical {
+    margin-bottom: 2rem;
+    animation: floatUp 0.9s 0.1s both;
+  }
+  .welcome-eyebrow {
+    font-size: 0.68rem; font-weight: 600;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--salvia); margin-bottom: 1.25rem;
+    animation: floatUp 0.8s 0.25s both;
+  }
+  .welcome-title {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: clamp(2.2rem, 5vw, 3.5rem);
+    line-height: 1.1;
+    color: var(--crema);
+    margin-bottom: 0.75rem;
+    animation: floatUp 0.8s 0.4s both;
+  }
+  .welcome-title em { font-style: italic; color: var(--petalo); display: block; }
+  .welcome-subtitle {
+    font-family: 'Playfair Display', serif;
+    font-style: italic; font-size: 1.05rem;
+    color: var(--dorado); margin-bottom: 1.75rem;
+    animation: floatUp 0.8s 0.55s both;
+  }
+  .welcome-desc {
+    font-size: 0.92rem; line-height: 1.78;
+    color: rgba(250,248,245,0.6);
+    max-width: 440px; margin-bottom: 2.5rem;
+    animation: floatUp 0.8s 0.7s both;
+  }
+
+  .welcome-meta {
+    display: flex; gap: 2rem; justify-content: center;
+    margin-bottom: 2.5rem;
+    animation: floatUp 0.8s 0.85s both;
+  }
+  .meta-item {
+    display: flex; flex-direction: column; align-items: center; gap: 0.35rem;
+  }
+  .meta-item span {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900; font-size: 1.4rem;
+    color: var(--dorado);
+  }
+  .meta-item p {
+    font-size: 0.68rem; letter-spacing: 0.08em;
+    text-transform: uppercase; color: rgba(250,248,245,0.4);
+  }
+
+  .name-input-row {
+    display: flex; flex-direction: column; gap: 0.6rem;
+    width: 100%; max-width: 360px;
+    margin-bottom: 1.5rem;
+    animation: floatUp 0.8s 1s both;
+  }
+  .name-input-row label {
+    font-size: 0.72rem; font-weight: 600;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: rgba(250,248,245,0.45);
+  }
+  .name-input-row input {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 12px;
+    padding: 0.85rem 1.25rem;
+    font-family: 'Public Sans', sans-serif;
+    font-size: 1rem; color: var(--crema);
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+    width: 100%;
+  }
+  .name-input-row input::placeholder { color: rgba(250,248,245,0.25); }
+  .name-input-row input:focus {
+    border-color: var(--petalo);
+    background: rgba(255,255,255,0.1);
+  }
+
+  .btn-start {
+    background: var(--terracota);
+    color: white;
+    padding: 1rem 2.75rem;
+    border-radius: 100px;
+    font-family: 'Public Sans', sans-serif;
+    font-size: 0.9rem; font-weight: 700;
+    letter-spacing: 0.06em;
+    border: none;
+    display: inline-flex; align-items: center; gap: 0.6rem;
+    transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+    animation: floatUp 0.8s 1.1s both;
+  }
+  .btn-start:hover {
+    background: var(--rosa-seca);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(184,92,69,0.4);
+  }
+
+  .welcome-disclaimer {
+    font-size: 0.7rem; color: rgba(250,248,245,0.25);
+    margin-top: 1.25rem;
+    animation: floatUp 0.8s 1.2s both;
+  }
+
+  .pillar-dots {
+    display: flex; gap: 0.75rem; justify-content: center;
+    margin-bottom: 2rem;
+    animation: floatUp 0.8s 0.3s both;
+  }
+  .pillar-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    opacity: 0.6;
+  }
+  .pillar-dot.mind { background: var(--mind-color); }
+  .pillar-dot.body { background: var(--body-color); }
+  .pillar-dot.spirit { background: var(--spirit-color); }
+  .pillar-dot.community { background: var(--dorado); }
+
+  /* ── QUIZ SCREEN ── */
+  #screen-quiz {
+    background: var(--off-white);
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0;
+  }
+
+  .quiz-header {
+    position: fixed; top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 0;
+    background: var(--off-white);
+  }
+  .quiz-progress-track {
+    height: 3px;
+    background: rgba(0,0,0,0.07);
+    position: relative;
+  }
+  .quiz-progress-fill {
+    height: 100%;
+    background: var(--terracota);
+    border-radius: 0 2px 2px 0;
+    transition: width 0.5s cubic-bezier(.23,1,.32,1);
+    position: relative;
+  }
+  .quiz-progress-fill::after {
+    content: '';
+    position: absolute; right: -1px; top: -3px;
+    width: 9px; height: 9px;
+    background: var(--terracota);
+    border-radius: 50%;
+  }
+  .quiz-top-bar {
+    padding: 1.1rem 2rem;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .quiz-section-label {
+    display: flex; align-items: center; gap: 0.6rem;
+    font-size: 0.68rem; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--mid); opacity: 0.7;
+  }
+  .quiz-section-dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .quiz-counter {
+    font-size: 0.72rem; font-weight: 500;
+    color: var(--mid); opacity: 0.5;
+    letter-spacing: 0.04em;
+  }
+
+  .quiz-body {
+    flex: 1;
+    display: flex; align-items: center; justify-content: center;
+    padding: 7rem 2rem 5rem;
+    min-height: 100vh;
+  }
+
+  .question-slide {
+    max-width: 640px; width: 100%;
+    transition: opacity 0.4s ease, transform 0.4s cubic-bezier(.23,1,.32,1);
+  }
+  .question-slide.hidden {
+    opacity: 0; transform: translateX(40px); pointer-events: none;
+    position: absolute;
+  }
+  .question-slide.exit {
+    opacity: 0; transform: translateX(-40px); pointer-events: none;
+    position: absolute;
+  }
+
+  .q-pillar-badge {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-size: 0.65rem; font-weight: 700;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    padding: 0.35rem 0.9rem; border-radius: 100px;
+    margin-bottom: 1.75rem;
+  }
+  .q-pillar-badge.mind { background: rgba(29,158,117,0.1); color: var(--mind-color); }
+  .q-pillar-badge.body { background: rgba(184,92,69,0.1); color: var(--body-color); }
+  .q-pillar-badge.spirit { background: rgba(127,119,221,0.1); color: var(--spirit-color); }
+  .q-pillar-badge.community { background: rgba(196,154,26,0.12); color: var(--community-color); }
+
+  .q-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.8rem; font-weight: 700;
+    color: var(--mid); opacity: 0.4;
+    margin-bottom: 0.75rem;
+    letter-spacing: 0.04em;
+  }
+
+  .q-text {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: clamp(1.5rem, 3vw, 2.1rem);
+    line-height: 1.25;
+    color: var(--dark);
+    margin-bottom: 2.5rem;
+  }
+
+  .scale-options {
+    display: flex; gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+  .scale-btn {
+    flex: 1; min-width: 80px;
+    display: flex; flex-direction: column; align-items: center;
+    gap: 0.5rem;
+    background: white;
+    border: 1.5px solid rgba(0,0,0,0.08);
+    border-radius: 16px;
+    padding: 1rem 0.75rem;
+    font-family: 'Public Sans', sans-serif;
+    transition: border-color 0.2s, background 0.2s, transform 0.15s;
+    outline: none;
+  }
+  .scale-btn:hover {
+    border-color: var(--terracota);
+    background: rgba(184,92,69,0.04);
+    transform: translateY(-2px);
+  }
+  .scale-btn.selected {
+    border-color: var(--terracota);
+    background: rgba(184,92,69,0.07);
+  }
+  .scale-btn.selected .scale-num {
+    background: var(--terracota);
+    color: white;
+  }
+  .scale-num {
+    width: 34px; height: 34px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 0.95rem;
+    background: rgba(0,0,0,0.05);
+    color: var(--mid);
+    transition: background 0.2s, color 0.2s;
+  }
+  .scale-label {
+    font-size: 0.68rem; font-weight: 600;
+    color: var(--mid); text-align: center;
+    letter-spacing: 0.02em;
+    line-height: 1.3;
+  }
+
+  .scale-spectrum {
+    display: flex; justify-content: space-between;
+    margin-top: 0.75rem;
+    font-size: 0.65rem; color: var(--mid); opacity: 0.45;
+    letter-spacing: 0.04em;
+  }
+
+  .quiz-nav {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 2.5rem;
+  }
+  .btn-prev {
+    display: flex; align-items: center; gap: 0.4rem;
+    font-size: 0.78rem; font-weight: 600;
+    color: var(--mid); opacity: 0.6;
+    background: none; border: none; padding: 0.5rem 0;
+    transition: opacity 0.2s, color 0.2s;
+  }
+  .btn-prev:hover { opacity: 1; color: var(--dark); }
+  .btn-prev:disabled { opacity: 0.2; pointer-events: none; }
+
+  .btn-next {
+    background: var(--terracota);
+    color: white;
+    padding: 0.75rem 1.75rem;
+    border-radius: 100px;
+    font-family: 'Public Sans', sans-serif;
+    font-size: 0.82rem; font-weight: 700;
+    letter-spacing: 0.06em;
+    border: none;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    transition: background 0.2s, transform 0.15s, opacity 0.2s, box-shadow 0.2s;
+  }
+  .btn-next:hover:not(:disabled) {
+    background: var(--rosa-seca);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(184,92,69,0.3);
+  }
+  .btn-next:disabled {
+    opacity: 0.35;
+    pointer-events: none;
+  }
+
+  /* ── SECTION INTRO ── */
+  .section-intro {
+    max-width: 560px; width: 100%;
+    text-align: center;
+    display: none;
+    flex-direction: column; align-items: center;
+  }
+  .section-intro.active { display: flex; }
+
+  .intro-icon-wrap {
+    width: 72px; height: 72px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 1.5rem;
+    animation: floatUp 0.6s both;
+  }
+  .intro-icon-wrap.mind { background: rgba(29,158,117,0.12); }
+  .intro-icon-wrap.body { background: rgba(184,92,69,0.1); }
+  .intro-icon-wrap.spirit { background: rgba(127,119,221,0.1); }
+  .intro-icon-wrap.community { background: rgba(196,154,26,0.1); }
+
+  .section-intro h2 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    line-height: 1.1;
+    color: var(--dark);
+    margin-bottom: 0.75rem;
+    animation: floatUp 0.6s 0.1s both;
+  }
+  .section-intro h2 em { font-style: italic; color: var(--terracota); }
+
+  .section-intro p {
+    font-size: 0.95rem; line-height: 1.75;
+    color: var(--mid); max-width: 420px;
+    margin-bottom: 2rem;
+    animation: floatUp 0.6s 0.2s both;
+  }
+
+  .btn-begin-section {
+    background: var(--terracota);
+    color: white;
+    padding: 0.85rem 2.25rem;
+    border-radius: 100px;
+    font-family: 'Public Sans', sans-serif;
+    font-size: 0.85rem; font-weight: 700;
+    letter-spacing: 0.05em;
+    border: none;
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    animation: floatUp 0.6s 0.3s both;
+  }
+  .btn-begin-section:hover {
+    background: var(--rosa-seca);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 22px rgba(184,92,69,0.3);
+  }
+  .section-count-label {
+    font-size: 0.7rem; color: var(--mid); opacity: 0.5;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    margin-top: 1.25rem;
+    animation: floatUp 0.6s 0.4s both;
+  }
+
+  /* ── EMAIL SCREEN ── */
+  #screen-email {
+    background: var(--crema);
+    flex-direction: column;
+    text-align: center;
+  }
+  .email-inner {
+    max-width: 500px;
+    display: flex; flex-direction: column; align-items: center;
+  }
+  .email-eyebrow {
+    font-size: 0.68rem; font-weight: 600;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--salvia); margin-bottom: 1.25rem;
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .email-eyebrow::before, .email-eyebrow::after {
+    content: ''; display: block;
+    width: 24px; height: 1px; background: var(--salvia);
+  }
+  .email-title {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900; font-size: clamp(1.8rem, 4vw, 2.8rem);
+    line-height: 1.15; color: var(--dark);
+    margin-bottom: 0.75rem;
+  }
+  .email-title em { font-style: italic; color: var(--terracota); display: block; }
+  .email-sub {
+    font-size: 0.9rem; line-height: 1.7;
+    color: var(--mid); margin-bottom: 2rem;
+    max-width: 380px;
+  }
+  .email-form {
+    width: 100%; max-width: 380px;
+    display: flex; flex-direction: column; gap: 0.75rem;
+  }
+  .email-form input {
+    background: white;
+    border: 1.5px solid rgba(0,0,0,0.1);
+    border-radius: 12px;
+    padding: 0.9rem 1.25rem;
+    font-family: 'Public Sans', sans-serif;
+    font-size: 0.95rem; color: var(--dark);
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+  }
+  .email-form input::placeholder { color: rgba(92,74,58,0.4); }
+  .email-form input:focus { border-color: var(--terracota); }
+  .btn-get-results {
+    background: var(--terracota);
+    color: white;
+    padding: 1rem;
+    border-radius: 12px;
+    font-family: 'Public Sans', sans-serif;
+    font-size: 0.9rem; font-weight: 700;
+    letter-spacing: 0.05em; border: none;
+    display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+    transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+    width: 100%;
+  }
+  .btn-get-results:hover {
+    background: var(--rosa-seca);
+    transform: translateY(-1px);
+    box-shadow: 0 8px 22px rgba(184,92,69,0.3);
+  }
+  .skip-email {
+    font-size: 0.75rem; color: var(--mid); opacity: 0.5;
+    margin-top: 0.75rem;
+    background: none; border: none; padding: 0;
+    text-decoration: underline;
+    transition: opacity 0.2s;
+  }
+  .skip-email:hover { opacity: 0.8; }
+  .mini-score-preview {
+    display: flex; gap: 0.75rem; margin-bottom: 2rem;
+  }
+  .mini-pill {
+    padding: 0.4rem 0.9rem; border-radius: 100px;
+    font-size: 0.7rem; font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  .mini-pill.mind { background: rgba(29,158,117,0.12); color: var(--mind-color); }
+  .mini-pill.body { background: rgba(184,92,69,0.1); color: var(--body-color); }
+  .mini-pill.spirit { background: rgba(127,119,221,0.1); color: var(--spirit-color); }
+  .mini-pill.community { background: rgba(196,154,26,0.12); color: var(--community-color); }
+
+  /* ── RESULTS SCREEN ── */
+  #screen-results {
+    background: var(--off-white);
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0;
+    overflow-y: auto;
+    display: block;
+  }
+  #screen-results.hidden {
+    opacity: 0; pointer-events: none;
+    transform: none;
+  }
+
+  .results-hero {
+    background: var(--dark);
+    padding: 5rem 2rem 4rem;
+    text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .results-hero::before {
+    content: '';
+    position: absolute; top: -150px; left: 50%;
+    transform: translateX(-50%);
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(184,92,69,0.2) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .results-eyebrow {
+    font-size: 0.68rem; font-weight: 600;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--salvia); margin-bottom: 1rem;
+  }
+  .results-greeting {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900; font-size: clamp(2rem, 5vw, 3.5rem);
+    line-height: 1.1; color: var(--crema);
+    margin-bottom: 0.5rem;
+    position: relative; z-index: 1;
+  }
+  .results-greeting em { font-style: italic; color: var(--petalo); }
+  .results-sub {
+    font-family: 'Playfair Display', serif;
+    font-style: italic; font-size: 1rem;
+    color: var(--dorado); margin-bottom: 0.5rem;
+    position: relative; z-index: 1;
+  }
+
+  .persona-reveal {
+    display: inline-flex; align-items: center; gap: 0.75rem;
+    background: rgba(255,255,255,0.07);
+    border: 0.5px solid rgba(255,255,255,0.12);
+    border-radius: 100px;
+    padding: 0.65rem 1.5rem;
+    margin-top: 2rem;
+    position: relative; z-index: 1;
+    animation: floatUp 0.8s 0.3s both;
+  }
+  .persona-reveal-icon {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--terracota);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .persona-reveal-text {
+    font-size: 0.8rem; font-weight: 600;
+    color: var(--crema); letter-spacing: 0.02em;
+  }
+  .persona-reveal-text strong {
+    font-size: 1rem; font-weight: 900;
+    font-family: 'Playfair Display', serif;
+    display: block;
+    color: var(--petalo);
+  }
+
+  /* ── SCORE SECTION ── */
+  .results-body {
+    max-width: 720px; margin: 0 auto;
+    padding: 3rem 2rem 5rem;
+  }
+
+  .results-section-title {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900; font-size: 1.5rem;
+    color: var(--dark); margin-bottom: 0.25rem;
+  }
+  .results-section-title em { font-style: italic; color: var(--terracota); }
+  .results-section-sub {
+    font-size: 0.85rem; color: var(--mid); margin-bottom: 1.75rem;
+  }
+
+  .score-card {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    margin-bottom: 1.25rem;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.05);
+    transition: transform 0.3s;
+  }
+  .score-card:hover { transform: translateY(-2px); }
+
+  .score-card-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+  .score-pillar-label {
+    display: flex; align-items: center; gap: 0.6rem;
+  }
+  .score-pillar-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .score-pillar-name {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700; font-size: 1.1rem;
+    color: var(--dark);
+  }
+  .score-pct {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900; font-size: 1.4rem;
+    color: var(--dark);
+  }
+  .score-track {
+    height: 8px; background: rgba(0,0,0,0.06);
+    border-radius: 100px; overflow: hidden;
+    margin-bottom: 1.25rem;
+  }
+  .score-fill {
+    height: 100%; border-radius: 100px;
+    width: 0;
+    transition: width 1.2s cubic-bezier(.23,1,.32,1);
+  }
+  .score-status-row {
+    display: flex; gap: 0.5rem; flex-wrap: wrap;
+    margin-bottom: 1rem;
+  }
+  .status-chip {
+    font-size: 0.65rem; font-weight: 700;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    padding: 0.3rem 0.8rem; border-radius: 100px;
+  }
+  .score-card-body {
+    font-size: 0.88rem; line-height: 1.75;
+    color: var(--mid);
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    border-top: 0.5px solid rgba(0,0,0,0.07);
+    padding-top: 1rem;
+    margin-top: 0.25rem;
+  }
+
+  /* ── PERSONA CARD ── */
+  .persona-card {
+    background: var(--dark);
+    border-radius: 20px;
+    padding: 2.5rem;
+    margin: 2rem 0;
+    position: relative; overflow: hidden;
+    color: var(--crema);
+  }
+  .persona-card::before {
+    content: '';
+    position: absolute; bottom: -60px; right: -60px;
+    width: 250px; height: 250px;
+    background: radial-gradient(circle, rgba(184,92,69,0.2) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .persona-card-eyebrow {
+    font-size: 0.65rem; font-weight: 700;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--salvia); margin-bottom: 0.75rem;
+  }
+  .persona-name {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900; font-size: clamp(1.8rem, 4vw, 2.5rem);
+    line-height: 1.1; color: var(--crema);
+    margin-bottom: 0.5rem;
+  }
+  .persona-name em { font-style: italic; color: var(--petalo); }
+  .persona-tagline {
+    font-family: 'Playfair Display', serif;
+    font-style: italic; font-size: 1rem;
+    color: var(--dorado); margin-bottom: 1.5rem;
+  }
+  .persona-desc {
+    font-size: 0.9rem; line-height: 1.75;
+    color: rgba(250,248,245,0.65);
+    max-width: 480px; margin-bottom: 1.5rem;
+  }
+  .persona-traits {
+    display: flex; flex-wrap: wrap; gap: 0.5rem;
+  }
+  .persona-trait {
+    font-size: 0.68rem; font-weight: 600;
+    letter-spacing: 0.06em;
+    padding: 0.35rem 0.85rem; border-radius: 100px;
+    background: rgba(255,255,255,0.08);
+    color: rgba(250,248,245,0.7);
+  }
+
+  /* ── MICRO ACTION ── */
+  .micro-action-card {
+    background: var(--crema);
+    border-radius: 20px;
+    padding: 2rem 2.25rem;
+    margin: 0 0 1.25rem;
+    border-left: 4px solid var(--terracota);
+  }
+  .micro-action-label {
+    font-size: 0.65rem; font-weight: 700;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--terracota); margin-bottom: 0.75rem;
+    display: flex; align-items: center; gap: 0.5rem;
+  }
+  .micro-action-text {
+    font-family: 'Playfair Display', serif;
+    font-style: italic; font-size: 1.1rem;
+    line-height: 1.6; color: var(--dark);
+  }
+
+  /* ── CTA SECTION ── */
+  .results-cta {
+    background: var(--terracota);
+    border-radius: 20px;
+    padding: 2.5rem;
+    text-align: center;
+    position: relative; overflow: hidden;
+    margin-top: 2rem;
+  }
+  .results-cta::before {
+    content: '';
+    position: absolute; top: -100px; left: 50%;
+    transform: translateX(-50%);
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .results-cta h3 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 900; font-size: 1.6rem;
+    color: white; margin-bottom: 0.5rem;
+    position: relative;
+  }
+  .results-cta h3 em { font-style: italic; color: var(--petalo); }
+  .results-cta p {
+    font-size: 0.9rem; color: rgba(255,255,255,0.75);
+    margin-bottom: 1.75rem; position: relative;
+  }
+  .results-cta-btns {
+    display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap;
+    position: relative;
+  }
+  .btn-cta-white {
+    background: white; color: var(--terracota);
+    padding: 0.85rem 2rem; border-radius: 100px;
+    font-size: 0.85rem; font-weight: 700;
+    letter-spacing: 0.04em; text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: inline-flex; align-items: center; gap: 0.4rem;
+  }
+  .btn-cta-white:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  }
+  .btn-cta-ghost {
+    background: transparent; color: white;
+    border: 1.5px solid rgba(255,255,255,0.45);
+    padding: 0.85rem 2rem; border-radius: 100px;
+    font-size: 0.85rem; font-weight: 500;
+    letter-spacing: 0.04em; text-decoration: none;
+    transition: border-color 0.2s, transform 0.2s;
+    display: inline-flex; align-items: center; gap: 0.4rem;
+  }
+  .btn-cta-ghost:hover { border-color: white; transform: translateY(-2px); }
+
+  .results-retake {
+    text-align: center; margin-top: 2.5rem;
+    padding-bottom: 2rem;
+  }
+  .btn-retake {
+    font-size: 0.78rem; color: var(--mid); opacity: 0.5;
+    background: none; border: none; padding: 0;
+    text-decoration: underline;
+    transition: opacity 0.2s;
+  }
+  .btn-retake:hover { opacity: 0.8; }
+
+  /* ── SHARE ROW ── */
+  .share-row {
+    display: flex; align-items: center; gap: 0.75rem;
+    justify-content: center; margin-top: 1.75rem;
+    flex-wrap: wrap;
+  }
+  .share-label {
+    font-size: 0.7rem; font-weight: 600;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--mid); opacity: 0.5;
+  }
+  .btn-copy {
+    display: inline-flex; align-items: center; gap: 0.4rem;
+    font-size: 0.75rem; font-weight: 600;
+    color: var(--mid); background: white;
+    border: 1.5px solid rgba(0,0,0,0.1);
+    padding: 0.5rem 1rem; border-radius: 100px;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-copy:hover { border-color: var(--terracota); color: var(--terracota); }
+  .btn-copy.copied { border-color: var(--mind-color); color: var(--mind-color); }
+
+  /* ── DIVIDER ── */
+  .results-divider {
+    height: 0.5px; background: rgba(0,0,0,0.08);
+    margin: 2rem 0;
+  }
+  .results-section-header {
+    margin-bottom: 1.5rem;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes floatUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── LOADING STATE ── */
+  .loading-screen {
+    position: fixed; inset: 0;
+    background: var(--dark);
+    z-index: 1000;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 1.5rem;
+    transition: opacity 0.6s ease;
+  }
+  .loading-screen.fade-out { opacity: 0; pointer-events: none; }
+  .loading-flower {
+    animation: spin-slow 3s linear infinite;
+  }
+  @keyframes spin-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  .loading-text {
+    font-family: 'Playfair Display', serif;
+    font-style: italic; font-size: 1.05rem;
+    color: var(--dorado); letter-spacing: 0.04em;
+  }
+  .loading-dots {
+    display: flex; gap: 0.5rem;
+  }
+  .loading-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--petalo);
+    animation: dotPulse 1.4s ease-in-out infinite;
+  }
+  .loading-dot:nth-child(2) { animation-delay: 0.2s; }
+  .loading-dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes dotPulse {
+    0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+    40% { transform: scale(1); opacity: 1; }
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 640px) {
+    .scale-options { gap: 0.4rem; }
+    .scale-btn { min-width: 56px; padding: 0.75rem 0.4rem; }
+    .scale-label { font-size: 0.6rem; }
+    .quiz-top-bar { padding: 0.9rem 1.25rem; }
+    .quiz-body { padding: 6.5rem 1.25rem 4rem; }
+    .results-hero { padding: 5rem 1.5rem 3rem; }
+    .results-body { padding: 2rem 1.25rem 4rem; }
+    .persona-card { padding: 2rem 1.5rem; }
+  }
+
+  @media (max-width: 400px) {
+    .scale-options { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.3rem; }
+    .scale-btn { padding: 0.6rem 0.2rem; min-width: unset; }
+    .scale-label { display: none; }
+    .meta-item span { font-size: 1.1rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- CUSTOM CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV CHROME -->
+<a href="index.html" class="back-link" id="backLink">
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+  Back
+</a>
+<a href="index.html" class="nav-wordmark" id="navWordmark">Wellness <span>by Yaz</span></a>
+
+<!-- LOADING SCREEN -->
+<div class="loading-screen" id="loadingScreen">
+  <svg class="loading-flower" width="56" height="56" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="28" cy="28" r="10" fill="#B85C45"/>
+    <ellipse cx="28" cy="10" rx="7" ry="11" fill="#FAB6AB" opacity="0.85"/>
+    <ellipse cx="28" cy="10" rx="7" ry="11" fill="#FAB6AB" opacity="0.85" transform="rotate(60 28 28)"/>
+    <ellipse cx="28" cy="10" rx="7" ry="11" fill="#FAB6AB" opacity="0.85" transform="rotate(120 28 28)"/>
+    <ellipse cx="28" cy="10" rx="7" ry="11" fill="#FAB6AB" opacity="0.85" transform="rotate(180 28 28)"/>
+    <ellipse cx="28" cy="10" rx="7" ry="11" fill="#FAB6AB" opacity="0.85" transform="rotate(240 28 28)"/>
+    <ellipse cx="28" cy="10" rx="7" ry="11" fill="#FAB6AB" opacity="0.85" transform="rotate(300 28 28)"/>
+    <circle cx="28" cy="28" r="5" fill="#8B3A3A"/>
+  </svg>
+  <p class="loading-text">Getting your assessment ready…</p>
+  <div class="loading-dots">
+    <div class="loading-dot"></div>
+    <div class="loading-dot"></div>
+    <div class="loading-dot"></div>
+  </div>
+</div>
+
+<!-- ══ SCREEN: WELCOME ══ -->
+<div class="screen" id="screen-welcome">
+  <div class="welcome-inner">
+    <div class="welcome-botanical">
+      <svg width="80" height="80" viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+        <line x1="40" y1="72" x2="40" y2="28" stroke="#628474" stroke-width="2" stroke-linecap="round"/>
+        <path d="M40 50 Q18 36 14 18 Q34 24 40 44" fill="#8A9E7E" opacity="0.75"/>
+        <line x1="40" y1="48" x2="22" y2="28" stroke="#628474" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M40 38 Q62 24 66 6 Q46 16 40 34" fill="#CCD8C7"/>
+        <line x1="40" y1="36" x2="58" y2="16" stroke="#628474" stroke-width="1.5" stroke-linecap="round"/>
+        <circle cx="40" cy="22" r="7" fill="#B85C45"/>
+        <ellipse cx="40" cy="11" rx="4.5" ry="7.5" fill="#FAB6AB" opacity="0.9"/>
+        <ellipse cx="40" cy="11" rx="4.5" ry="7.5" fill="#FAB6AB" opacity="0.9" transform="rotate(60 40 22)"/>
+        <ellipse cx="40" cy="11" rx="4.5" ry="7.5" fill="#FAB6AB" opacity="0.9" transform="rotate(120 40 22)"/>
+        <ellipse cx="40" cy="11" rx="4.5" ry="7.5" fill="#FAB6AB" opacity="0.9" transform="rotate(180 40 22)"/>
+        <ellipse cx="40" cy="11" rx="4.5" ry="7.5" fill="#FAB6AB" opacity="0.9" transform="rotate(240 40 22)"/>
+        <ellipse cx="40" cy="11" rx="4.5" ry="7.5" fill="#FAB6AB" opacity="0.9" transform="rotate(300 40 22)"/>
+        <circle cx="40" cy="22" r="3.5" fill="#8B3A3A"/>
+        <ellipse cx="40" cy="75" rx="16" ry="5" fill="#8B3A3A" opacity="0.3"/>
+      </svg>
+    </div>
+
+    <div class="pillar-dots">
+      <div class="pillar-dot mind"></div>
+      <div class="pillar-dot body"></div>
+      <div class="pillar-dot spirit"></div>
+      <div class="pillar-dot community"></div>
+    </div>
+
+    <p class="welcome-eyebrow">Free Wellness Assessment</p>
+    <h1 class="welcome-title">
+      Find out where you
+      <em>actually are.</em>
+    </h1>
+    <p class="welcome-subtitle">30 questions. Four pillars. One honest mirror.</p>
+    <p class="welcome-desc">
+      Not just the gym. Not just the meal prep. Across Mind, Body, Spirit, and Community — this assessment will show you where you're thriving and where you have room to grow. No judgment. No hierarchy.
+    </p>
+
+    <div class="welcome-meta">
+      <div class="meta-item">
+        <span>30</span>
+        <p>Questions</p>
+      </div>
+      <div class="meta-item">
+        <span>~20</span>
+        <p>Minutes</p>
+      </div>
+      <div class="meta-item">
+        <span>4</span>
+        <p>Pillars</p>
+      </div>
+    </div>
+
+    <div class="name-input-row">
+      <label for="userName">What should we call you?</label>
+      <input type="text" id="userName" placeholder="Your first name" autocomplete="given-name" maxlength="40">
+    </div>
+
+    <button class="btn-start" id="btnStart">
+      Begin your assessment
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </button>
+    <p class="welcome-disclaimer">Free · No account required · Results emailed to you</p>
+  </div>
+</div>
+
+<!-- ══ SCREEN: QUIZ ══ -->
+<div class="screen hidden" id="screen-quiz">
+  <div class="quiz-header">
+    <div class="quiz-progress-track">
+      <div class="quiz-progress-fill" id="progressFill" style="width:0%"></div>
+    </div>
+    <div class="quiz-top-bar">
+      <div class="quiz-section-label" id="sectionLabel">
+        <div class="quiz-section-dot" id="sectionDot" style="background:var(--mind-color)"></div>
+        <span id="sectionLabelText">Mind</span>
+      </div>
+      <div class="quiz-counter" id="questionCounter">1 of 30</div>
+    </div>
+  </div>
+
+  <div class="quiz-body" id="quizBody">
+    <!-- Section intros injected here -->
+    <div class="section-intro" id="intro-mind">
+      <div class="intro-icon-wrap mind">
+        <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
+          <path d="M16 34a4 4 0 0 1-7.94-.77 4 4 0 0 1-1.66-5.27A5 5 0 0 1 3 22a5 5 0 0 1 3.67-4.83A4 4 0 0 1 16 7.5v26.5Z" stroke="#1D9E75" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M24 34a4 4 0 0 0 7.94-.77 4 4 0 0 0 1.66-5.27A5 5 0 0 0 37 22a5 5 0 0 0-3.67-4.83A4 4 0 0 0 24 7.5V34Z" stroke="#1D9E75" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          <line x1="20" y1="8" x2="20" y2="34" stroke="#1D9E75" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <h2>The <em>Mind</em> Pillar</h2>
+      <p>Clarity, creativity, and trusting yourself to take the next step anyway. A healthy mind doesn't mean having it all figured out — it means believing you'll figure it out.</p>
+      <button class="btn-begin-section" id="beginMind">
+        Let's go
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+      <p class="section-count-label">Questions 1–8</p>
+    </div>
+
+    <div class="section-intro" id="intro-body">
+      <div class="intro-icon-wrap body">
+        <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
+          <circle cx="20" cy="9" r="3.5" stroke="#B85C45" stroke-width="1.8"/>
+          <path d="M12 18 Q20 14 28 18" stroke="#B85C45" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+          <path d="M20 14 L20 26" stroke="#B85C45" stroke-width="1.8" stroke-linecap="round"/>
+          <path d="M20 22 L14 30" stroke="#B85C45" stroke-width="1.8" stroke-linecap="round"/>
+          <path d="M20 22 L26 30" stroke="#B85C45" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <h2>The <em>Body</em> Pillar</h2>
+      <p>Your body is not a project to optimize — it's a home to honor. Strength, rest, pleasure, and breath. All of it counts. Count colors, not calories.</p>
+      <button class="btn-begin-section" id="beginBody">
+        Let's go
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+      <p class="section-count-label">Questions 9–15</p>
+    </div>
+
+    <div class="section-intro" id="intro-spirit">
+      <div class="intro-icon-wrap spirit">
+        <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
+          <circle cx="20" cy="20" r="5" stroke="#7F77DD" stroke-width="1.8"/>
+          <line x1="20" y1="4" x2="20" y2="10" stroke="#7F77DD" stroke-width="1.8" stroke-linecap="round"/>
+          <line x1="20" y1="30" x2="20" y2="36" stroke="#7F77DD" stroke-width="1.8" stroke-linecap="round"/>
+          <line x1="4" y1="20" x2="10" y2="20" stroke="#7F77DD" stroke-width="1.8" stroke-linecap="round"/>
+          <line x1="30" y1="20" x2="36" y2="20" stroke="#7F77DD" stroke-width="1.8" stroke-linecap="round"/>
+          <line x1="8.7" y1="8.7" x2="13" y2="13" stroke="#7F77DD" stroke-width="1.8" stroke-linecap="round"/>
+          <line x1="27" y1="27" x2="31.3" y2="31.3" stroke="#7F77DD" stroke-width="1.8" stroke-linecap="round"/>
+          <line x1="31.3" y1="8.7" x2="27" y2="13" stroke="#7F77DD" stroke-width="1.8" stroke-linecap="round"/>
+          <line x1="13" y1="27" x2="8.7" y2="31.3" stroke="#7F77DD" stroke-width="1.8" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <h2>The <em>Spirit</em> Pillar</h2>
+      <p>The thread connecting you to everything larger than yourself — ancestors, earth, purpose, your inner child. Encomendándote a Dios. Or just being still enough to listen.</p>
+      <button class="btn-begin-section" id="beginSpirit">
+        Let's go
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+      <p class="section-count-label">Questions 16–23</p>
+    </div>
+
+    <div class="section-intro" id="intro-community">
+      <div class="intro-icon-wrap community">
+        <svg width="32" height="32" viewBox="0 0 40 40" fill="none">
+          <circle cx="14" cy="13" r="4" stroke="#C49A1A" stroke-width="1.8"/>
+          <circle cx="26" cy="13" r="4" stroke="#C49A1A" stroke-width="1.8"/>
+          <circle cx="20" cy="24" r="4" stroke="#C49A1A" stroke-width="1.8"/>
+          <path d="M7 30 Q7 24 14 24" stroke="#C49A1A" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+          <path d="M33 30 Q33 24 26 24" stroke="#C49A1A" stroke-width="1.8" stroke-linecap="round" fill="none"/>
+        </svg>
+      </div>
+      <h2>The <em>Community</em> Pillar</h2>
+      <p>Wellness doesn't happen in isolation. Your neighborhood, your people, the world around you — it's all part of your health. Find your role in the pursuit of justice and belonging.</p>
+      <button class="btn-begin-section" id="beginCommunity">
+        Last section — let's go
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+      <p class="section-count-label">Questions 24–30</p>
+    </div>
+
+    <!-- Questions injected by JS -->
+    <div class="question-slide hidden" id="questionSlide">
+      <div class="q-pillar-badge" id="qBadge">Mind</div>
+      <div class="q-number" id="qNumber">01</div>
+      <h2 class="q-text" id="qText"></h2>
+      <div class="scale-options" id="scaleOptions">
+        <button class="scale-btn" data-value="1">
+          <div class="scale-num">1</div>
+          <div class="scale-label">Not yet</div>
+        </button>
+        <button class="scale-btn" data-value="2">
+          <div class="scale-num">2</div>
+          <div class="scale-label">Sometimes</div>
+        </button>
+        <button class="scale-btn" data-value="3">
+          <div class="scale-num">3</div>
+          <div class="scale-label">Getting there</div>
+        </button>
+        <button class="scale-btn" data-value="4">
+          <div class="scale-num">4</div>
+          <div class="scale-label">Mostly yes</div>
+        </button>
+        <button class="scale-btn" data-value="5">
+          <div class="scale-num">5</div>
+          <div class="scale-label">Absolutely</div>
+        </button>
+      </div>
+      <div class="scale-spectrum">
+        <span>Not at all</span>
+        <span>Completely</span>
+      </div>
+      <div class="quiz-nav">
+        <button class="btn-prev" id="btnPrev" disabled>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+          Previous
+        </button>
+        <button class="btn-next" id="btnNext" disabled>
+          Next
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SCREEN: EMAIL ══ -->
+<div class="screen hidden" id="screen-email">
+  <div class="email-inner">
+    <p class="email-eyebrow">Almost there</p>
+    <h2 class="email-title">
+      You did it.
+      <em>Now let's see you.</em>
+    </h2>
+    <p class="email-sub">Enter your email and we'll send your full wellness snapshot — including your persona, pillar breakdown, and next steps — so you can revisit it anytime.</p>
+    <div class="mini-score-preview" id="miniScorePreview">
+      <span class="mini-pill mind">Mind</span>
+      <span class="mini-pill body">Body</span>
+      <span class="mini-pill spirit">Spirit</span>
+      <span class="mini-pill community">Community</span>
+    </div>
+    <form class="email-form" id="emailForm" onsubmit="return false;">
+      <input type="email" id="userEmail" placeholder="your@email.com" autocomplete="email">
+      <button type="submit" class="btn-get-results" id="btnGetResults">
+        See my results
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+      </button>
+    </form>
+    <button class="skip-email" id="skipEmail">Skip — just show me my results</button>
+  </div>
+</div>
+
+<!-- ══ SCREEN: RESULTS ══ -->
+<div class="screen hidden" id="screen-results">
+  <div class="results-hero" id="resultsHero">
+    <p class="results-eyebrow">Your Wellness Snapshot</p>
+    <h1 class="results-greeting" id="resultsGreeting">You showed up,<br><em>that's the whole thing.</em></h1>
+    <p class="results-sub" id="resultsSub">Here's what we found.</p>
+    <div class="persona-reveal" id="personaReveal">
+      <div class="persona-reveal-icon">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      </div>
+      <div class="persona-reveal-text">
+        You are
+        <strong id="personaNameShort">The Visionary</strong>
+      </div>
+    </div>
+  </div>
+
+  <div class="results-body">
+
+    <!-- PERSONA CARD -->
+    <div class="persona-card" id="personaCard">
+      <p class="persona-card-eyebrow">Your wellness type</p>
+      <h2 class="persona-name" id="personaFullName">The <em>Visionary</em></h2>
+      <p class="persona-tagline" id="personaTagline">"Big ideas. Full notes app. Ready to take the next step."</p>
+      <p class="persona-desc" id="personaDesc">You live in your mind — and it's a beautiful place. You have clarity, creativity, and ambition. But your body and spirit are quietly waiting for you to come home to them. The next level of your wellness isn't another plan. It's presence.</p>
+      <div class="persona-traits" id="personaTraits">
+        <span class="persona-trait">Self-aware</span>
+        <span class="persona-trait">Strategic</span>
+        <span class="persona-trait">Creative</span>
+        <span class="persona-trait">Growth-oriented</span>
+      </div>
+    </div>
+
+    <!-- SCORE BARS -->
+    <div class="results-section-header">
+      <h3 class="results-section-title">Your four <em>pillars.</em></h3>
+      <p class="results-section-sub">Where you're thriving — and where there's room to grow.</p>
+    </div>
+
+    <div id="scoreBars">
+      <!-- Injected by JS -->
+    </div>
+
+    <div class="results-divider"></div>
+
+    <!-- MICRO ACTION -->
+    <div class="results-section-header">
+      <h3 class="results-section-title">Your <em>immediate</em> get-to-do.</h3>
+      <p class="results-section-sub">Not a 30-day plan. Something you can do right now.</p>
+    </div>
+    <div class="micro-action-card">
+      <div class="micro-action-label">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        Do this right now
+      </div>
+      <p class="micro-action-text" id="microAction">"Put your phone down. Put your hands on your belly. Take 5 slow breaths and just feel your body in the room."</p>
+    </div>
+
+    <div class="results-divider"></div>
+
+    <!-- CTA -->
+    <div class="results-cta">
+      <h3>Ready to go <em>deeper?</em></h3>
+      <p>This snapshot is the beginning. Work with Yaz to build a wellness practice that actually fits your real life — across all four pillars.</p>
+      <div class="results-cta-btns">
+        <a href="index.html#services" class="btn-cta-white">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+          Book a coaching call
+        </a>
+        <a href="index.html#services" class="btn-cta-ghost">
+          See all services
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- SHARE / RETAKE -->
+    <div class="share-row">
+      <span class="share-label">Share</span>
+      <button class="btn-copy" id="btnCopy">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        Copy result link
+      </button>
+    </div>
+
+    <div class="results-retake">
+      <button class="btn-retake" id="btnRetake">Retake the assessment</button>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────────────
+
+const QUESTIONS = [
+  // MIND (1–8)
+  { id: 1, pillar: 'mind', text: "I feel clear-headed and focused throughout my day." },
+  { id: 2, pillar: 'mind', text: "I trust my own judgment when making decisions." },
+  { id: 3, pillar: 'mind', text: "I give myself permission to rest my mind — to step away from tasks, screens, and obligations." },
+  { id: 4, pillar: 'mind', text: "I have a creative outlet or practice that feels genuinely mine." },
+  { id: 5, pillar: 'mind', text: "When I feel overwhelmed, I have real tools to come back to myself." },
+  { id: 6, pillar: 'mind', text: "I set and hold boundaries that protect my mental energy." },
+  { id: 7, pillar: 'mind', text: "I speak to myself with compassion — not just criticism." },
+  { id: 8, pillar: 'mind', text: "I feel genuinely excited about something in my future." },
+  // BODY (9–15)
+  { id: 9,  pillar: 'body', text: "I move my body in ways that feel good — not punishing." },
+  { id: 10, pillar: 'body', text: "I eat with pleasure and attention, not just fuel or guilt." },
+  { id: 11, pillar: 'body', text: "I get enough sleep and wake up actually feeling rested." },
+  { id: 12, pillar: 'body', text: "I listen to what my body tells me — pain, tension, hunger, joy." },
+  { id: 13, pillar: 'body', text: "I feel at home in my body." },
+  { id: 14, pillar: 'body', text: "I make time for physical pleasure — stretching, dancing, rest, warmth." },
+  { id: 15, pillar: 'body', text: "I honor my body's need for recovery, not just performance." },
+  // SPIRIT (16–23)
+  { id: 16, pillar: 'spirit', text: "I feel connected to something larger than myself — ancestors, God, nature, or purpose." },
+  { id: 17, pillar: 'spirit', text: "I have a spiritual or reflective practice (prayer, meditation, journaling, time in nature)." },
+  { id: 18, pillar: 'spirit', text: "I feel a deep sense of meaning in my daily life." },
+  { id: 19, pillar: 'spirit', text: "I am connected to my cultural roots and heritage." },
+  { id: 20, pillar: 'spirit', text: "I make time for stillness and silence." },
+  { id: 21, pillar: 'spirit', text: "I feel at peace with who I am at my core." },
+  { id: 22, pillar: 'spirit', text: "I find beauty or gratitude in ordinary moments." },
+  { id: 23, pillar: 'spirit', text: "My values and my actions feel aligned." },
+  // COMMUNITY (24–30)
+  { id: 24, pillar: 'community', text: "I have relationships where I feel truly seen and supported." },
+  { id: 25, pillar: 'community', text: "I give back to my community in ways that feel meaningful to me." },
+  { id: 26, pillar: 'community', text: "I feel a genuine sense of belonging — a place where I fit." },
+  { id: 27, pillar: 'community', text: "I feel comfortable asking for help when I need it." },
+  { id: 28, pillar: 'community', text: "My community relationships energize me — not just drain me." },
+  { id: 29, pillar: 'community', text: "I feel connected to the neighborhood or place I call home." },
+  { id: 30, pillar: 'community', text: "I engage with the world around me in a way that feels aligned with who I am." },
+];
+
+const PILLAR_COLORS = {
+  mind: 'var(--mind-color)',
+  body: 'var(--body-color)',
+  spirit: 'var(--spirit-color)',
+  community: 'var(--community-color)',
+};
+const PILLAR_HEX = {
+  mind: '#1D9E75',
+  body: '#B85C45',
+  spirit: '#7F77DD',
+  community: '#C49A1A',
+};
+const PILLAR_LABELS = { mind: 'Mind', body: 'Body', spirit: 'Spirit', community: 'Community' };
+
+const PILLAR_SUMMARIES = {
+  mind: {
+    thriving: { status: 'Strong foundation', chip: 'Thriving', text: "Your mind is one of your greatest assets. You navigate complexity with clarity, you trust yourself, and you've built inner space for rest and creativity. This is the anchor — keep tending it." },
+    growing:  { status: 'Growing', chip: 'Room to grow', text: "Your mind is working hard — sometimes too hard. There are pockets of clarity but also pockets of noise. The invitation here is less about thinking more and more about thinking differently: softer, more trusting." },
+    attention:{ status: 'Needs attention', chip: 'Needs attention', text: "Right now, your mind may feel scattered, critical, or just plain exhausted. That's not a character flaw — it's information. You don't have to fix everything at once. Start with one small act of mental kindness per day." },
+  },
+  body: {
+    thriving: { status: 'Strong foundation', chip: 'Thriving', text: "You have a real relationship with your body — one built on respect, not punishment. You move for joy, rest without guilt, and you're learning to listen. That's not common. That's earned." },
+    growing:  { status: 'Growing', chip: 'Room to grow', text: "You're showing up for your body, but it might still feel more like an obligation than a home. The shift from discipline to desire — from 'should' to 'want' — is the work. Count colors, not calories." },
+    attention:{ status: 'Needs attention', chip: 'Needs attention', text: "Your body has been patient, but it's asking for more. Not more workouts — more presence. Start small: one meal eaten without your phone, one night of real sleep, one breath you actually feel." },
+  },
+  spirit: {
+    thriving: { status: 'Strong foundation', chip: 'Thriving', text: "You are anchored. You move through the world with a quiet knowing — connected to your roots, your purpose, and something beyond the day-to-day hustle. That's rare, and it's a gift you give to everyone around you." },
+    growing:  { status: 'Growing', chip: 'Room to grow', text: "You have a spiritual core — it's just been a little buried. Life gets loud and the quiet practices slip. The invitation is to reclaim even 5 minutes a day for something that feels sacred to you. That's enough to begin." },
+    attention:{ status: 'Needs attention', chip: 'Needs attention', text: "Your spirit is hungry. Not for more productivity — for meaning, for rootedness, for a sense that your life is going somewhere that matters. This is the pillar that, when tended, makes everything else easier." },
+  },
+  community: {
+    thriving: { status: 'Strong foundation', chip: 'Thriving', text: "You are held, and you hold others. Your community relationships are real — not just surface-level connections. You belong somewhere and you know it. That kind of rootedness is a wellness practice in itself." },
+    growing:  { status: 'Growing', chip: 'Room to grow', text: "You have connections, but something might feel missing — depth, reciprocity, or belonging. The hard and beautiful truth: going deeper requires vulnerability. It requires letting people actually see you." },
+    attention:{ status: 'Needs attention', chip: 'Needs attention', text: "You may be surrounded by people and still feel profoundly alone. That's one of the quietest forms of unwell. Start with one honest conversation. One moment of genuine need expressed. Community grows from that." },
+  },
+};
+
+const PERSONAS = [
+  {
+    id: 'visionary',
+    name: 'The Visionary',
+    em: 'Visionary',
+    tagline: '"Big ideas. Full notes app. Ready to take the next step."',
+    desc: 'You live in your mind — and it\'s a beautiful place. You have clarity, creativity, and ambition. But your body and spirit are quietly waiting for you to come home to them. The next level of your wellness isn\'t another plan. It\'s presence.',
+    traits: ['Self-aware', 'Strategic', 'Creative', 'Growth-oriented'],
+    action: '"Put your phone down. Put your hands on your belly. Take 5 slow breaths and actually feel your body in the room — not thinking about it, just feeling it."',
+    match: s => s.mind >= s.body && s.mind >= s.spirit && s.mind >= s.community && s.mind > 65,
+  },
+  {
+    id: 'giver',
+    name: 'The Giver',
+    em: 'Giver',
+    tagline: '"You pour into everyone. Who\'s filling you back up?"',
+    desc: 'You show up for your people like nobody else. You are the one who checks in, who remembers, who holds it together. But somewhere in all that giving, your own cup got emptied. The work isn\'t to give less — it\'s to finally let yourself receive.',
+    traits: ['Generous', 'Connected', 'Rooted', 'Community-first'],
+    action: '"Text one person who pours into you: \'I just wanted to say thank you for being in my corner.\' Then put your phone down and sit with that for a minute."',
+    match: s => s.community >= s.mind && s.community >= s.body && s.community >= s.spirit && (s.body < 60 || s.spirit < 60),
+  },
+  {
+    id: 'seeker',
+    name: 'The Seeker',
+    em: 'Seeker',
+    tagline: '"Deeply rooted within. Learning to bring that light outward."',
+    desc: 'You have a rich inner world — connected to something larger, to your roots, to meaning. But sometimes that depth stays private. The invitation is to bring your inner knowing into your relationships and community. Your rootedness is a gift the world needs.',
+    traits: ['Reflective', 'Purposeful', 'Spiritually grounded', 'Inner knowing'],
+    action: '"Reach out to one person who makes you feel less alone. Not when everything is perfect — right now, as you are."',
+    match: s => s.spirit >= s.mind && s.spirit >= s.body && s.spirit >= s.community && s.community < 65,
+  },
+  {
+    id: 'workhorse',
+    name: 'The Workhorse',
+    em: 'Workhorse',
+    tagline: '"You show up. Every time. The question is — for what?"',
+    desc: 'You are disciplined. Consistent. You do the thing, again and again. But are you doing it because it feeds you, or because stopping feels dangerous? The shift from grinding to thriving starts by learning to value stillness as much as action.',
+    traits: ['Disciplined', 'Resilient', 'Consistent', 'High performer'],
+    action: '"Give yourself 10 unscheduled minutes today. No tasks. No productivity. Just exist. Notice what comes up."',
+    match: s => s.body >= s.spirit && s.body >= s.community && s.body > 65 && s.spirit < 60,
+  },
+  {
+    id: 'whole',
+    name: 'The Whole',
+    em: 'Whole',
+    tagline: '"Balanced. Grounded. Quietly thriving."',
+    desc: 'You\'re in a genuinely good place across all four pillars. That doesn\'t mean perfect — it means you\'ve built a real relationship with yourself. The work now isn\'t fixing anything. It\'s deepening. Going from good to rooted.',
+    traits: ['Balanced', 'Self-aware', 'Grounded', 'Integrative'],
+    action: '"Write down three things that are actually working in your wellness right now. Name them. You deserve to see them."',
+    match: s => s.mind >= 65 && s.body >= 65 && s.spirit >= 65 && s.community >= 65,
+  },
+  {
+    id: 'beginning',
+    name: 'The Beginning',
+    em: 'Beginning',
+    tagline: '"You\'re here. That is the whole thing."',
+    desc: 'This is not a bad score. This is an honest one. You showed up, you answered truthfully, and that takes more courage than people admit. You\'re at the start of something real — and starting where you actually are is the only way to actually begin.',
+    traits: ['Courageous', 'Honest', 'Open', 'Beginning'],
+    action: '"Drop your shoulders. Unclench your jaw. Take one full, slow breath. You just began."',
+    match: () => true,
+  },
+];
+
+const SECTION_INTROS = {
+  mind: { firstQ: 0 },
+  body: { firstQ: 8 },
+  spirit: { firstQ: 15 },
+  community: { firstQ: 23 },
+};
+
+// ── STATE ──────────────────────────────────────────────────────────────────────
+
+let userName = '';
+let answers = new Array(30).fill(null);
+let currentQ = -1; // -1 = showing a section intro
+let currentIntro = 'mind';
+let showingIntro = true;
+
+// ── DOM ──────────────────────────────────────────────────────────────────────
+
+const screens = {
+  welcome: document.getElementById('screen-welcome'),
+  quiz:    document.getElementById('screen-quiz'),
+  email:   document.getElementById('screen-email'),
+  results: document.getElementById('screen-results'),
+};
+
+function showScreen(name) {
+  Object.entries(screens).forEach(([k, el]) => {
+    if (k === name) {
+      el.classList.remove('hidden', 'exit');
+    } else {
+      el.classList.add('hidden');
+      el.classList.remove('exit');
+    }
+  });
+
+  const backLink = document.getElementById('backLink');
+  const wordmark = document.getElementById('navWordmark');
+  if (name === 'welcome') {
+    backLink.style.color = 'rgba(250,248,245,0.45)';
+    wordmark.style.color = 'var(--crema)';
+  } else {
+    backLink.style.color = '';
+    wordmark.style.color = '';
+  }
+}
+
+// ── WELCOME ──────────────────────────────────────────────────────────────────
+
+document.getElementById('btnStart').addEventListener('click', () => {
+  userName = document.getElementById('userName').value.trim() || 'friend';
+  screens.welcome.classList.add('exit');
+  setTimeout(() => {
+    showScreen('quiz');
+    showSectionIntro('mind');
+  }, 350);
+});
+
+document.getElementById('userName').addEventListener('keydown', e => {
+  if (e.key === 'Enter') document.getElementById('btnStart').click();
+});
+
+// ── SECTION INTROS ──────────────────────────────────────────────────────────
+
+function showSectionIntro(pillar) {
+  showingIntro = true;
+  document.getElementById('questionSlide').classList.add('hidden');
+  ['mind','body','spirit','community'].forEach(p => {
+    document.getElementById('intro-' + p).classList.remove('active');
+  });
+  document.getElementById('intro-' + pillar).classList.add('active');
+  currentIntro = pillar;
+  updateHeaderForPillar(pillar);
+}
+
+['mind','body','spirit','community'].forEach(p => {
+  document.getElementById('begin' + p.charAt(0).toUpperCase() + p.slice(1)).addEventListener('click', () => {
+    showingIntro = false;
+    document.getElementById('intro-' + p).classList.remove('active');
+    const firstIdx = SECTION_INTROS[p].firstQ;
+    goToQuestion(firstIdx);
+  });
+});
+
+function updateHeaderForPillar(pillar) {
+  const colors = { mind: '#1D9E75', body: '#B85C45', spirit: '#7F77DD', community: '#C49A1A' };
+  document.getElementById('sectionDot').style.background = colors[pillar];
+  document.getElementById('sectionLabelText').textContent = PILLAR_LABELS[pillar];
+}
+
+// ── QUIZ ─────────────────────────────────────────────────────────────────────
+
+function goToQuestion(idx) {
+  currentQ = idx;
+  const q = QUESTIONS[idx];
+  const slide = document.getElementById('questionSlide');
+
+  // Update pillar header
+  updateHeaderForPillar(q.pillar);
+
+  // Update badge
+  const badge = document.getElementById('qBadge');
+  badge.textContent = PILLAR_LABELS[q.pillar];
+  badge.className = 'q-pillar-badge ' + q.pillar;
+
+  // Update question text
+  document.getElementById('qNumber').textContent = String(idx + 1).padStart(2, '0');
+  document.getElementById('qText').textContent = q.text;
+  document.getElementById('questionCounter').textContent = `${idx + 1} of 30`;
+
+  // Update progress
+  document.getElementById('progressFill').style.width = ((idx / 30) * 100) + '%';
+
+  // Restore selected answer
+  document.querySelectorAll('.scale-btn').forEach(btn => {
+    const val = parseInt(btn.dataset.value);
+    btn.classList.toggle('selected', answers[idx] === val);
+  });
+
+  // Update nav buttons
+  document.getElementById('btnPrev').disabled = idx === 0;
+  document.getElementById('btnNext').disabled = answers[idx] === null;
+  document.getElementById('btnNext').textContent = idx === 29 ? 'See my results' : 'Next';
+  if (idx < 29) {
+    document.getElementById('btnNext').innerHTML = 'Next <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
+  } else {
+    document.getElementById('btnNext').innerHTML = 'See my results <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
+  }
+
+  // Show slide
+  slide.classList.remove('hidden', 'exit');
+}
+
+// Scale buttons
+document.getElementById('scaleOptions').addEventListener('click', e => {
+  const btn = e.target.closest('.scale-btn');
+  if (!btn) return;
+  const val = parseInt(btn.dataset.value);
+  answers[currentQ] = val;
+
+  document.querySelectorAll('.scale-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  document.getElementById('btnNext').disabled = false;
+});
+
+// Keyboard shortcuts
+document.addEventListener('keydown', e => {
+  if (showingIntro) return;
+  if (['1','2','3','4','5'].includes(e.key)) {
+    const val = parseInt(e.key);
+    answers[currentQ] = val;
+    document.querySelectorAll('.scale-btn').forEach(b => {
+      b.classList.toggle('selected', parseInt(b.dataset.value) === val);
+    });
+    document.getElementById('btnNext').disabled = false;
+  }
+  if (e.key === 'ArrowRight' || e.key === 'Enter') {
+    if (!document.getElementById('btnNext').disabled) document.getElementById('btnNext').click();
+  }
+  if (e.key === 'ArrowLeft') {
+    if (!document.getElementById('btnPrev').disabled) document.getElementById('btnPrev').click();
+  }
+});
+
+document.getElementById('btnNext').addEventListener('click', () => {
+  if (answers[currentQ] === null) return;
+
+  const nextIdx = currentQ + 1;
+
+  if (nextIdx >= 30) {
+    // Done with quiz
+    document.getElementById('progressFill').style.width = '100%';
+    screens.quiz.classList.add('exit');
+    setTimeout(() => showScreen('email'), 350);
+    return;
+  }
+
+  // Check if next question is the first of a new pillar
+  const currPillar = QUESTIONS[currentQ].pillar;
+  const nextPillar = QUESTIONS[nextIdx].pillar;
+
+  const slide = document.getElementById('questionSlide');
+  slide.classList.add('exit');
+
+  setTimeout(() => {
+    if (currPillar !== nextPillar) {
+      slide.classList.add('hidden');
+      slide.classList.remove('exit');
+      showSectionIntro(nextPillar);
+    } else {
+      slide.classList.remove('exit');
+      goToQuestion(nextIdx);
+    }
+  }, 300);
+});
+
+document.getElementById('btnPrev').addEventListener('click', () => {
+  if (currentQ <= 0) return;
+  const prevIdx = currentQ - 1;
+
+  const slide = document.getElementById('questionSlide');
+  slide.classList.add('exit');
+
+  setTimeout(() => {
+    slide.classList.remove('exit');
+    goToQuestion(prevIdx);
+  }, 300);
+});
+
+// ── EMAIL ────────────────────────────────────────────────────────────────────
+
+document.getElementById('btnGetResults').addEventListener('click', () => {
+  showResultsScreen();
+});
+document.getElementById('skipEmail').addEventListener('click', () => {
+  showResultsScreen();
+});
+document.getElementById('emailForm').addEventListener('submit', e => {
+  e.preventDefault();
+  showResultsScreen();
+});
+
+// ── SCORING ──────────────────────────────────────────────────────────────────
+
+function calcScores() {
+  const totals = { mind: 0, body: 0, spirit: 0, community: 0 };
+  const counts = { mind: 0, body: 0, spirit: 0, community: 0 };
+  QUESTIONS.forEach((q, i) => {
+    const a = answers[i] || 3;
+    totals[q.pillar] += a;
+    counts[q.pillar]++;
+  });
+  const pcts = {};
+  Object.keys(totals).forEach(p => {
+    pcts[p] = Math.round((totals[p] / (counts[p] * 5)) * 100);
+  });
+  return pcts;
+}
+
+function getStatusLevel(pct) {
+  if (pct >= 70) return 'thriving';
+  if (pct >= 45) return 'growing';
+  return 'attention';
+}
+
+function getPersona(scores) {
+  return PERSONAS.find(p => p.match(scores)) || PERSONAS[PERSONAS.length - 1];
+}
+
+// ── RESULTS ──────────────────────────────────────────────────────────────────
+
+function showResultsScreen() {
+  const scores = calcScores();
+  const persona = getPersona(scores);
+
+  // Show loading
+  const loading = document.getElementById('loadingScreen');
+  loading.style.display = 'flex';
+  loading.style.opacity = '1';
+
+  setTimeout(() => {
+    buildResults(scores, persona);
+    screens.email.classList.add('exit');
+    setTimeout(() => {
+      showScreen('results');
+      // Fade out loading after results visible
+      setTimeout(() => {
+        loading.classList.add('fade-out');
+        setTimeout(() => loading.style.display = 'none', 700);
+        animateScoreBars();
+      }, 200);
+    }, 350);
+  }, 1800);
+}
+
+function buildResults(scores, persona) {
+  const firstName = userName.split(' ')[0];
+
+  // Hero
+  document.getElementById('resultsGreeting').innerHTML =
+    `${firstName},<br><em>here's your snapshot.</em>`;
+  document.getElementById('personaNameShort').textContent = persona.name;
+
+  // Persona card
+  document.getElementById('personaFullName').innerHTML =
+    `The <em>${persona.em}</em>`;
+  document.getElementById('personaTagline').textContent = persona.tagline;
+  document.getElementById('personaDesc').textContent = persona.desc;
+
+  const traitsEl = document.getElementById('personaTraits');
+  traitsEl.innerHTML = persona.traits.map(t =>
+    `<span class="persona-trait">${t}</span>`
+  ).join('');
+
+  // Micro action
+  document.getElementById('microAction').innerHTML = persona.action;
+
+  // Score bars
+  const barsEl = document.getElementById('scoreBars');
+  barsEl.innerHTML = '';
+  ['mind','body','spirit','community'].forEach(p => {
+    const pct = scores[p];
+    const level = getStatusLevel(pct);
+    const summary = PILLAR_SUMMARIES[p][level];
+    const card = document.createElement('div');
+    card.className = 'score-card';
+    card.innerHTML = `
+      <div class="score-card-header">
+        <div class="score-pillar-label">
+          <div class="score-pillar-dot" style="background:${PILLAR_HEX[p]}"></div>
+          <div class="score-pillar-name">${PILLAR_LABELS[p]}</div>
+        </div>
+        <div class="score-pct">${pct}%</div>
+      </div>
+      <div class="score-track">
+        <div class="score-fill" data-width="${pct}" style="background:${PILLAR_HEX[p]};width:0%"></div>
+      </div>
+      <div class="score-status-row">
+        <span class="status-chip" style="background:${PILLAR_HEX[p]}22;color:${PILLAR_HEX[p]}">${summary.chip}</span>
+      </div>
+      <div class="score-card-body">"${summary.text}"</div>
+    `;
+    barsEl.appendChild(card);
+  });
+}
+
+function animateScoreBars() {
+  setTimeout(() => {
+    document.querySelectorAll('.score-fill').forEach(el => {
+      el.style.width = el.dataset.width + '%';
+    });
+  }, 150);
+}
+
+// ── RETAKE ────────────────────────────────────────────────────────────────────
+
+document.getElementById('btnRetake').addEventListener('click', () => {
+  answers = new Array(30).fill(null);
+  currentQ = -1;
+  showingIntro = true;
+  screens.results.classList.add('exit');
+  setTimeout(() => {
+    showScreen('quiz');
+    showSectionIntro('mind');
+    document.getElementById('progressFill').style.width = '0%';
+    document.getElementById('questionSlide').classList.add('hidden');
+  }, 350);
+});
+
+// ── COPY LINK ────────────────────────────────────────────────────────────────
+
+document.getElementById('btnCopy').addEventListener('click', () => {
+  navigator.clipboard.writeText(window.location.href).then(() => {
+    const btn = document.getElementById('btnCopy');
+    btn.classList.add('copied');
+    btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg> Copied!`;
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg> Copy result link`;
+    }, 2500);
+  });
+});
+
+// ── CURSOR ────────────────────────────────────────────────────────────────────
+
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+let mx = 0, my = 0, rx = 0, ry = 0;
+
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cursor.style.left = mx + 'px';
+  cursor.style.top = my + 'px';
+});
+
+function animateRing() {
+  rx += (mx - rx) * 0.12;
+  ry += (my - ry) * 0.12;
+  ring.style.left = rx + 'px';
+  ring.style.top = ry + 'px';
+  requestAnimationFrame(animateRing);
+}
+animateRing();
+
+document.querySelectorAll('a, button, input').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    cursor.style.transform = 'translate(-50%,-50%) scale(2)';
+    cursor.style.background = 'var(--petalo)';
+    ring.style.opacity = '0';
+  });
+  el.addEventListener('mouseleave', () => {
+    cursor.style.transform = 'translate(-50%,-50%) scale(1)';
+    cursor.style.background = 'var(--terracota)';
+    ring.style.opacity = '0.5';
+  });
+});
+
+// ── INIT ──────────────────────────────────────────────────────────────────────
+
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    document.getElementById('loadingScreen').classList.add('fade-out');
+    setTimeout(() => {
+      document.getElementById('loadingScreen').style.display = 'none';
+    }, 700);
+  }, 900);
+});
+</script>
+</body>
+</html>
